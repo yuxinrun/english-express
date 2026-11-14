@@ -346,3 +346,38 @@ h1, h2, h3, h4 { line-height: 1.3; }
 .flow-card { text-align: left; cursor: pointer; }
 .flow-card .flow-arrow { transition: color .28s var(--ease), transform .28s var(--ease); }
 .flow-card:hover .flow-arrow { color: var(--accent); transform: translateX(2px); }
+
+/* ---------- 扩展内容：对话 / 避坑 / IM 模板 ---------- */
+.dialogue-turn {
+  border-left: 2px solid var(--line);
+  padding-left: 14px;
+  transition: border-left-color .28s var(--ease);
+}
+.dialogue-turn:hover { border-left-color: rgba(200, 138, 101, .55); }
+.dialogue-role {
+  font-family: 'Inter', sans-serif;
+  font-size: 10.5px; font-weight: 700;
+  color: var(--blue);
+  background: rgba(100, 139, 148, .1);
+  border-radius: 6px;
+  padding: 3px 7px;
+  min-width: 44px;
+  text-align: center;
+  flex: none;
+  line-height: 1.6;
+}
+.pitfall-bad {
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  color: #9A948C;
+  text-decoration: line-through;
+  text-decoration-color: rgba(154, 148, 140, .5);
+  line-height: 1.6;
+}
+.im-body {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 12.5px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

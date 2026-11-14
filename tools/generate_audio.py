@@ -36,7 +36,10 @@ d.meetingPhrases.forEach(x => push(x.en));
 d.progressPhrases.forEach(x => push(x.en));
 d.glossary.forEach(x => push(x.en));
 d.emailTemplates.forEach(x => push(x.subject));
-d.quiz.forEach(x => push(x.options[x.answer]));
+d.quiz.forEach(x => { if (/[A-Za-z]/.test(x.options[x.answer])) push(x.options[x.answer]); });
+d.abbr.forEach(x => push(x.example));
+d.dialogues.forEach(x => x.turns.forEach(t => push(t.en)));
+d.pitfalls.forEach(x => push(x.good));
 process.stdout.write(JSON.stringify(items));
 """
 

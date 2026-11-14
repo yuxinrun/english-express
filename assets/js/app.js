@@ -551,10 +551,11 @@
             <span class="font-semibold ${right ? 'text-warm-blue' : 'text-warm-accent'}">${right ? '回答正确' : '正确答案：' + letters[q.answer]}</span>
             <span class="text-[11px] ml-2 px-2 py-0.5 rounded bg-white/70 text-warm-muted">${esc(q.channel)}</span>
             <p class="mt-1 text-warm-muted">${esc(q.explanation)}</p>
+            ${/[A-Za-z]/.test(q.options[q.answer]) ? `
             <div class="mt-2 flex items-center gap-2">
               <button type="button" class="speak-btn !w-7 !h-7" data-speak="${esc(q.options[q.answer])}" aria-label="朗读正确表达" title="朗读正确表达"><i class="fa-solid fa-volume-high text-[12px]"></i></button>
               <span class="text-[11.5px] text-warm-muted">朗读正确表达</span>
-            </div>
+            </div>` : ''}
           </div>
         </div>` : '';
 
@@ -710,6 +711,139 @@
   });
 
   window.addEventListener('hashchange', applyRoute);
+
+  /* ---------- 扩展内容区块 ----------
+     新区块由 JS 挂载到对应页面末尾，index.html 无需改动；
+     [data-speak] 复用全局发音委托，局部交互在此函数内自行绑定。 */
+  function renderExtras() {
+    // 1) 首页：外企缩写与黑话速查
+    $('view-home').insertAdjacentHTML('beforeend', `
+      <div class="border-t border-warm-line bg-white/60">
+        <div class="max-w-7xl mx-auto px-5 lg:px-8 py-14 lg:py-16">
+          <span class="eyebrow"><i class="fa-solid fa-spell-check"></i> ABBREVIATIONS</span>
+          <h2 class="title-underline mt-3 text-[24px] lg:text-[28px] font-bold">外企缩写与黑话速查</h2>
+          <p class="mt-5 text-[14px] text-warm-muted max-w-2xl">EOD、LGTM、WIP、p99 在真实外企沟通里每天都会出现。点小喇叭听例句，先听懂再开口。</p>
+          <div id="abbrGrid" class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
+        </div>
+      </div>`);
+    $('abbrGrid').innerHTML = D.abbr.map((a) => `
+      <div class="card card-hover p-4">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex flex-wrap items-center gap-1.5">
+            <span class="font-en text-[15px] font-bold text-warm-ink">${esc(a.term)}</span>
+            <span class="text-[10px] font-semibold text-warm-blue bg-warm-blue/10 rounded px-2 py-0.5">${esc(a.kind)}</span>
+          </div>
+          <button type="button" class="speak-btn !w-7 !h-7" data-speak="${esc(a.example)}" aria-label="朗读例句" title="朗读例句"><i class="fa-solid fa-volume-high text-[12px]"></i></button>
+        </div>
+        <p class="font-en mt-2 text-[11.5px] text-warm-muted">${esc(a.full)}</p>
+        <p class="phrase-zh mt-0.5">${esc(a.zh)}</p>
+        <p class="phrase-en mt-3 text-[12px] font-medium leading-[1.6]">${esc(a.example)}</p>
+        <p class="mt-2 text-[11px] text-warm-accent"><i class="fa-solid fa-check mr-1"></i>适合技术会议</p>
+      </div>`).join('');
+
+    // 2) 会议口语库：真实会议对话（tab 切换）
+    $('view-phrases').insertAdjacentHTML('beforeend', `
+      <div class="border-t border-warm-line bg-white/60">
+        <div class="max-w-7xl mx-auto px-5 lg:px-8 py-14 lg:py-16">
+          <span class="eyebrow"><i class="fa-solid fa-comments"></i> REAL MEETING DIALOGUES</span>
+          <h2 class="title-underline mt-3 text-[24px] lg:text-[28px] font-bold">真实会议对话</h2>
+          <p class="mt-5 text-[14px] text-warm-muted max-w-2xl">孤立句子背下来还不够。按外企真实会议流程跟读整段对话，学会一句话接一句话。</p>
+          <div id="dialogueTabs" class="mt-7 flex flex-wrap gap-2"></div>
+          <div id="dialogueBody" class="mt-6"></div>
+        </div>
+      </div>`);
+    const dTabs = $('dialogueTabs');
+    dTabs.innerHTML = D.dialogues.map((d, i) => `
+      <button type="button" class="tag ${i === 0 ? 'is-active' : ''}" data-dialogue="${i}">${esc(d.title)}</button>
+    `).join('');
+    const drawDialogue = (idx) => {
+      const d = D.dialogues[idx];
+      $('dialogueBody').innerHTML = `
+        <div class="card p-6 lg:p-7">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="fit-badge"><i class="fa-solid fa-check"></i>适合技术会议</span>
+            <span class="text-[11.5px] text-warm-muted">${esc(d.scene)}</span>
+            <span class="text-[11.5px] text-warm-blue sm:ml-auto">外企技术研讨会 · 项目进度跟踪会</span>
+          </div>
+          <div class="mt-5 space-y-3">
+            ${d.turns.map((t) => `
+              <div class="dialogue-turn">
+                <div class="flex items-start gap-3">
+                  <span class="dialogue-role">${esc(t.role)}</span>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-start gap-2">
+                      <p class="phrase-en flex-1 text-[14px]">${esc(t.en)}</p>
+                      <button type="button" class="speak-btn !w-7 !h-7" data-speak="${esc(t.en)}" aria-label="朗读这句英文" title="朗读这句英文"><i class="fa-solid fa-volume-high text-[12px]"></i></button>
+                    </div>
+                    <p class="phrase-zh mt-1">${esc(t.zh)}</p>
+                  </div>
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>`;
+      dTabs.querySelectorAll('[data-dialogue]').forEach((b) => {
+        b.classList.toggle('is-active', Number(b.getAttribute('data-dialogue')) === idx);
+      });
+    };
+    drawDialogue(0);
+    dTabs.onclick = (e) => {
+      const b = e.target.closest('[data-dialogue]');
+      if (b) drawDialogue(Number(b.getAttribute('data-dialogue')));
+    };
+
+    // 3) 项目进度句型：中式英语避坑 + Slack/Teams 成段消息模板
+    $('view-progress').insertAdjacentHTML('beforeend', `
+      <div class="border-t border-warm-line bg-white/60">
+        <div class="max-w-7xl mx-auto px-5 lg:px-8 py-14 lg:py-16">
+          <span class="eyebrow"><i class="fa-solid fa-code-compare"></i> COMMON MISTAKES</span>
+          <h2 class="title-underline mt-3 text-[24px] lg:text-[28px] font-bold">中式英语避坑</h2>
+          <p class="mt-5 text-[14px] text-warm-muted max-w-2xl">左边是课本式 / 直译常见说法，右边是外企技术会议里真正会说的版本，下面说明为什么。</p>
+          <div id="pitfallGrid" class="mt-8 grid md:grid-cols-2 gap-4"></div>
+        </div>
+      </div>
+      <div class="max-w-7xl mx-auto px-5 lg:px-8 pb-16">
+        <span class="eyebrow"><i class="fa-solid fa-message"></i> SLACK / TEAMS MESSAGES</span>
+        <h2 class="title-underline mt-3 text-[24px] lg:text-[28px] font-bold">Slack / Teams 成段消息模板</h2>
+        <p class="mt-5 text-[14px] text-warm-muted max-w-2xl">比句型更长、可整段复制；比邮件更短、适合扫读。替换 [ ] 占位符后直接发送。</p>
+        <div id="imGrid" class="mt-8 grid md:grid-cols-2 gap-4"></div>
+      </div>`);
+    $('pitfallGrid').innerHTML = D.pitfalls.map((p) => `
+      <div class="card card-hover p-5">
+        <span class="text-[10.5px] font-semibold text-warm-blue bg-warm-blue/10 rounded px-2 py-0.5">${esc(p.tag)}</span>
+        <div class="mt-3 flex items-start gap-2">
+          <i class="fa-solid fa-xmark text-warm-muted mt-1 text-[11px]"></i>
+          <p class="pitfall-bad">${esc(p.bad)}</p>
+        </div>
+        <div class="mt-3 flex items-start gap-2">
+          <i class="fa-solid fa-check text-warm-accent mt-1 text-[11px]"></i>
+          <div class="flex items-start gap-2 flex-1 min-w-0">
+            <p class="phrase-en flex-1 text-[13.5px]">${esc(p.good)}</p>
+            <button type="button" class="speak-btn !w-7 !h-7" data-speak="${esc(p.good)}" aria-label="朗读正确表达" title="朗读正确表达"><i class="fa-solid fa-volume-high text-[12px]"></i></button>
+          </div>
+        </div>
+        <p class="mt-3 text-[12px] text-warm-muted leading-[1.65]">${esc(p.why)}</p>
+        <p class="mt-2 text-[11px] text-warm-accent"><i class="fa-solid fa-check mr-1"></i>适合技术会议</p>
+      </div>`).join('');
+    $('imGrid').innerHTML = D.imTemplates.map((t) => `
+      <div class="card card-hover p-5 flex flex-col">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h3 class="text-[14px] font-bold">${esc(t.name)}</h3>
+            <p class="mt-1 text-[12px] text-warm-muted">${esc(t.scene)}</p>
+          </div>
+          <button type="button" class="btn btn-quiet !py-1.5 !px-3 shrink-0" data-im-copy="${esc(t.id)}"><i class="fa-solid fa-copy text-[11px]"></i> 复制</button>
+        </div>
+        <div class="im-body mt-4 bg-warm-bg border border-warm-line rounded-xl p-4 text-warm-ink">${esc(t.body)}</div>
+        <p class="mt-3 text-[11px] text-warm-accent"><i class="fa-solid fa-check mr-1"></i>适合技术会议 · 会后文字同步</p>
+      </div>`).join('');
+    $('imGrid').onclick = (e) => {
+      const b = e.target.closest('[data-im-copy]');
+      if (!b) return;
+      const t = D.imTemplates.find((x) => x.id === b.getAttribute('data-im-copy'));
+      if (t) copyText(t.body).then((ok) => toast(ok ? '已复制，替换 [ ] 占位符后即可发送' : '复制失败，请手动选中文本复制'));
+    };
+  }
+  renderExtras();
 
   /* ---------- 初始化 ---------- */
   // 扩展内容区追加的句子统一按分类归组，保证「全部」视图顺序整洁

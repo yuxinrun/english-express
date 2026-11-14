@@ -981,3 +981,256 @@ window.SITE_DATA.glossary = [
   { en: 'regression suite', zh: '回归用例集', kind: '版本', fit: '技术同步会议' }
 ];
 
+/* ---------- 二次扩充：对话、避坑、缩写、IM 模板、更多模板与题目 ---------- */
+window.SITE_DATA.glossary.push(
+  { en: 'scope creep', zh: '范围悄悄扩大，需求不断被加进来', kind: '状态', fit: '项目进度跟踪会' },
+  { en: 'bandwidth', zh: '人力 / 处理余量，不是网络带宽', kind: '协作', fit: '迭代规划会' },
+  { en: 'parking lot', zh: '暂存议题，会后单独讨论', kind: '协作', fit: '技术研讨会' },
+  { en: 'action item', zh: '行动项，需带 owner 和截止时间', kind: '协作', fit: '项目进度跟踪会' },
+  { en: 'on-call', zh: '值班，负责线上问题响应', kind: '版本', fit: '技术同步会议' },
+  { en: 'spike', zh: '有时间盒的技术预研', kind: '协作', fit: '技术研讨会' },
+  { en: 'flaky test', zh: '时好时坏、不稳定的测试', kind: '风险', fit: '项目进度跟踪会' },
+  { en: 'handoff', zh: '工作交接与责任转移', kind: '协作', fit: '技术同步会议' }
+);
+
+window.SITE_DATA.emailTemplates.push(
+  {
+    id: 'e-07', name: '技术方案决策记录', icon: 'fa-solid fa-diagram-project',
+    scene: '技术研讨会 / 方案评审后，把结论、取舍与后续验证写成可追溯的书面记录。',
+    subject: '[PROJECT] Decision Record – [TOPIC] ([DATE])',
+    body: `Hi [TEAM],
+
+Recording the decision from the [MEETING] sync so we have a single source of truth.
+
+Context
+- [CONTEXT]
+
+Decision
+- We agreed on [DECISION].
+- Alternatives considered: [OPTION_A] (rejected: [REASON_A]), [OPTION_B] (rejected: [REASON_B]).
+
+Trade-offs
+- [COST]
+
+Validation and follow-up
+- [ACTION_A] — [OWNER_A], by [DATE_A]
+- Revisit after [MILESTONE] with data on [METRIC].
+
+If anything here is inaccurate, please reply in thread before [DATE_B].`,
+    signature: `Best regards,
+[NAME]
+[ROLE] | [TEAM]`,
+    note: '适合外企技术研讨会、方案评审会后的结论沉淀；写清被否掉的方案与原因，避免几周后重复讨论。'
+  },
+  {
+    id: 'e-08', name: '休假与值班交接', icon: 'fa-solid fa-plane',
+    scene: '请假或轮换 on-call 前的交接邮件，说明覆盖范围、当前状态与紧急联系人。',
+    subject: 'OOO [DATE] – [DATE_B] | [PROJECT] handover to [OWNER]',
+    body: `Hi [TEAM],
+
+I'll be OOO from [DATE] to [DATE_B]. [OWNER] will cover [PROJECT] while I'm away.
+
+Current status
+- [TASK_A]: [STATUS_A] (ETA [DATE_C])
+- [TASK_B]: [STATUS_B], waiting on [DEPENDENCY]
+- Known risk: [RISK] — mitigation: [ACTION]
+
+In progress / do not touch
+- [ITEM_A] is mid-review; please don't merge before [DATE_D].
+
+On-call
+- Primary: [OWNER], backup: [OWNER_B]. Runbook: [LINK].
+- Escalate P0 issues via [CHANNEL].
+
+I'll have limited access to [CHANNEL]. Thanks for covering.`,
+    signature: `Thanks,
+[NAME]
+[ROLE] | [TEAM]`,
+    note: '适合外企技术同步会议之外的异步协作；交接邮件要写清状态、风险、值班人和升级渠道。'
+  }
+);
+
+window.SITE_DATA.quiz.push(
+  { id: 'q-19', scene: 'Slack 里同事说 "The test is flaky, WIP on a fix."，WIP 是什么意思？',
+    options: [
+      'Work In Progress，进行中',
+      'Wrong Input Provided，输入有误',
+      'Weekly Iteration Plan，周迭代计划',
+      'Work Is Postponed，工作已推迟'
+    ], answer: 0, channel: '文字沟通',
+    explanation: 'WIP = Work In Progress，常见于看板、站会文字同步和 Slack 状态，适合文字沟通。会上口头版是 "I\'m still working on it."。flaky 指测试时好时坏，也是外企技术会议高频词。' },
+  { id: 'q-20', scene: '邮件里想请对方「今天下班前回复」，最合适的表达是？',
+    options: [
+      'Please reply me as soon as possible.',
+      'Could you get back to me by EOD?',
+      'Answer me today please.',
+      'I wait for your reply.'
+    ], answer: 1, channel: '文字沟通',
+    explanation: 'reply 是不及物动词，不能接 me；EOD（End of Day）给出明确截止时间，是外企邮件 / IM 的高频表达，适合文字沟通。会上口头版是 "Could we confirm this by end of day?"。' },
+  { id: 'q-21', scene: 'PR 评审里同事回复 "LGTM, one minor comment."，意思是？',
+    options: [
+      'Looks Good To Me，基本通过，只有一条小建议',
+      '请立刻合并，不要做任何修改',
+      '代码有严重问题，需要重写',
+      '这个 PR 已被关闭'
+    ], answer: 0, channel: '文字沟通',
+    explanation: 'LGTM 是 code review 的通过信号，minor comment 表示还有一处小建议，适合文字沟通（PR 评论、Slack）。会上口头版是 "Looks good to me, just one small thing."。' },
+  { id: 'q-22', scene: '技术研讨会上主持人说 "Let\'s park this and take it offline."，最恰当的理解是？',
+    options: [
+      '这个话题先记下，会后小范围单独讨论',
+      '会议取消，大家都下线',
+      '把这段录屏保存到本地',
+      '这个问题不需要再管了'
+    ], answer: 0, channel: '口头会议',
+    explanation: 'park + take it offline 是会议控场说法，避免少数人的细节占满全员时间，适合口头会议（外企技术研讨会、项目进度跟踪会）；会后结论仍要发到 Slack 形成文字沟通闭环。' },
+  { id: 'q-23', scene: '技术同步会上同事说 "p99 latency is up 30% in staging."，这是在表达什么？',
+    options: [
+      'staging 环境的 99 分位延迟上升了 30%',
+      '99% 的请求都失败了',
+      '延迟下降了 30%',
+      '测试覆盖率是 30%'
+    ], answer: 0, channel: '口头会议',
+    explanation: 'p99 是 99 分位延迟，用指标描述问题比 "the system is slow" 更专业，适合口头会议（技术研讨会、技术同步会）。文字版写 "p99 latency: +30% in staging. Details: [LINK]."。' },
+  { id: 'q-24', scene: 'Slack 里发风险提醒，哪一条最完整可用？',
+    options: [
+      'Something may be wrong, please be careful.',
+      'Heads-up: [RISK] may affect [MILESTONE]. Current ETA: [DATE]. Mitigation: [ACTION]. Full context: [LINK].',
+      'I am worried about the project.',
+      'Let\'s talk sometime.'
+    ], answer: 1, channel: '文字沟通',
+    explanation: '正确答案包含风险、影响的里程碑、当前 ETA、缓解措施和详情链接，别人不用追问就能行动，适合文字沟通。会上口头版是 "I want to flag a risk: [RISK] could affect [MILESTONE]."。' }
+);
+
+/* 真实会议对话：多轮、带角色，整段可直接跟读 */
+window.SITE_DATA.dialogues = [
+  {
+    title: '每日站会', scene: 'Daily Standup · 每人一条进度与阻塞',
+    turns: [
+      { role: 'PM', en: "Let's do a quick round — one update per person, blockers only.", zh: '我们快速过一轮，每人一条，只讲阻塞。' },
+      { role: 'DEV', en: 'On my side, the auth module is done and has been merged into main.', zh: '我这边 auth 模块已完成并合并到 main。' },
+      { role: 'DEV', en: "No blockers; I'm picking up the retry logic next.", zh: '没有阻塞，接下来我做重试逻辑。' },
+      { role: 'QA', en: 'The regression suite passed on staging, but two flaky tests are still under investigation.', zh: '回归用例在 staging 通过了，还有两个不稳定测试在排查。' },
+      { role: 'PM', en: "Any risk to Friday's demo?", zh: '周五的 demo 有风险吗？' },
+      { role: 'DEV', en: "Not from my side. I'll have a working demo by Thursday EOD.", zh: '我这边没有。周四下班前能有可演示的版本。' },
+      { role: 'QA', en: "I'll need the final build by Wednesday to finish the pass.", zh: '我周三前需要最终构建包才能完成验证。' },
+      { role: 'PM', en: "To recap: build by Wednesday, demo by Thursday. I'll drop the notes in Slack.", zh: '总结一下：周三出包，周四演示，我会把纪要发到 Slack。' }
+    ]
+  },
+  {
+    title: '进度跟踪会 · 延期风险', scene: 'Weekly Tracking · 发现排期不可达',
+    turns: [
+      { role: 'PM', en: "Let's start with the status of the v2.4 release.", zh: '我们先看 v2.4 发布的状态。' },
+      { role: 'TL', en: "We're likely to slip by two days because of the flaky integration test.", zh: '因为集成测试不稳定，可能延期两天。' },
+      { role: 'PM', en: "What's driving the delay exactly?", zh: '具体是什么原因导致的延期？' },
+      { role: 'TL', en: "The upstream API keeps timing out in staging, so we can't verify the checkout flow.", zh: '上游 API 在 staging 一直超时，结算流程没法验证。' },
+      { role: 'PM', en: 'Is that on the critical path?', zh: '这在关键路径上吗？' },
+      { role: 'TL', en: 'Yes. Without the credentials from the platform team, the new ETA moves to Monday.', zh: '是的。拿不到平台团队的凭证，新预计时间就是下周一。' },
+      { role: 'PM', en: 'Can we descope anything to protect Friday?', zh: '能砍点范围保住周五吗？' },
+      { role: 'TL', en: 'One option is to ship behind a feature flag; the trade-off is a manual rollout.', zh: '一个方案是用功能开关上线，代价是要手动放量。' }
+    ]
+  },
+  {
+    title: '技术研讨会 · 方案讨论', scene: 'Design Review · 对比缓存策略',
+    turns: [
+      { role: 'TL', en: 'The goal today is to agree on the caching strategy.', zh: '今天的目标是把缓存策略定下来。' },
+      { role: 'DEV', en: 'One option is to cache at the edge; the trade-off is stale reads.', zh: '一个方案是在边缘缓存，代价是可能读到旧数据。' },
+      { role: 'SRE', en: "I see the point, but I'm a bit concerned about the invalidation path.", zh: '我理解，不过对缓存失效的路径有点担心。' },
+      { role: 'DEV', en: 'From the staging data, p99 latency dropped by 30% with the cache.', zh: '从 staging 数据看，加缓存后 p99 延迟降了 30%。' },
+      { role: 'SRE', en: 'Do we have data on the error rate before we decide?', zh: '决策前我们有错误率的数据吗？' },
+      { role: 'TL', en: "Let's timebox a spike to two days before committing to this option.", zh: '在定方案之前，先给技术预研两天的时间盒。' },
+      { role: 'DEV', en: 'That works, but we should validate it with a quick load test first.', zh: '可以，但最好先用一个简短的压测验证一下。' },
+      { role: 'TL', en: "To recap: spike by Wednesday, decision in Friday's sync.", zh: '总结一下：周三前完成预研，周五同步会上决策。' }
+    ]
+  },
+  {
+    title: '阻塞升级 · 跨团队协调', scene: 'Blocker Escalation · 依赖迟迟不到位',
+    turns: [
+      { role: 'DEV', en: 'I want to flag a risk: the API spec is still pending from the platform team.', zh: '想提一个风险：平台团队的 API 文档还没给。' },
+      { role: 'PM', en: 'How long has it been open?', zh: '这个挂了多久了？' },
+      { role: 'DEV', en: 'Requested on Nov 10, so five days now. Nothing has moved since Monday.', zh: '11 月 10 号提的，已经五天了，周一起就没进展。' },
+      { role: 'PM', en: "This needs escalation — it's on the critical path for the beta.", zh: '这个需要升级，它在 beta 的关键路径上。' },
+      { role: 'DEV', en: 'We need an ETA or a workaround we can use in staging.', zh: '我们需要一个预计时间，或者能在 staging 用的临时方案。' },
+      { role: 'PM', en: "I'll send an escalation email and copy the team lead.", zh: '我会发一封升级邮件，抄送团队负责人。' },
+      { role: 'DEV', en: "Thanks. I'll update the ticket and link the thread.", zh: '谢谢，我会更新工单并附上讨论链接。' },
+      { role: 'PM', en: "Let's revisit in tomorrow's sync if there's no reply by EOD.", zh: '如果今天下班前没回复，明天同步会上再过一次。' }
+    ]
+  }
+];
+
+/* 中式英语避坑：左边常见说法，右边外企真实说法 */
+window.SITE_DATA.pitfalls = [
+  { bad: 'Please reply me as soon as possible.', good: 'Could you get back to me by EOD?', why: 'reply 是不及物动词，不能接 me；EOD 给出明确截止时间，别人才能安排。', tag: '邮件 / IM' },
+  { bad: 'I very like this solution.', good: "I'd lean toward this option.", why: 'very 不能修饰动词；会上表达倾向用 lean toward 更自然、更克制。', tag: '技术研讨会' },
+  { bad: 'Our project has a big problem.', good: "We're at risk of missing the Friday milestone.", why: '说清影响哪个里程碑、什么时间，别人才好做范围或资源决策。', tag: '项目进度跟踪会' },
+  { bad: 'Maybe we will delay, sorry.', good: "We're likely to slip by two days because of the flaky test.", why: '延期要给幅度和原因；道歉不提供任何可行动信息。', tag: '项目进度跟踪会' },
+  { bad: "I don't know this word.", good: 'Could you clarify what idempotency means in this context?', why: '课本式提问换成对上下文语义的确认，是工程师的追问方式。', tag: '技术研讨会' },
+  { bad: 'Please help me to check.', good: 'Could you take a look at PR #482?', why: '给出具体对象和编号，对方能立刻行动，不用再问「看什么」。', tag: '线上沟通' },
+  { bad: 'We will discuss it later.', good: "Let's park this and take it offline.", why: 'park / take it offline 是技术会议控场的标准说法，明确不让话题占全员时间。', tag: '技术研讨会' },
+  { bad: 'This is not my job.', good: 'This is outside my scope — we need a DBA to unblock it.', why: '说明边界并给出所需角色，是推进问题而不是划清责任。', tag: '技术同步会议' },
+  { bad: 'The system is very slow, I think.', good: 'p99 latency is up 30% in staging.', why: '用指标代替主观感受，技术研讨会里才有说服力、才可复现。', tag: '技术研讨会' },
+  { bad: 'Please do it quickly.', good: "Could we get this by Wednesday? It's on the critical path.", why: '给具体时间和优先级，语气不催促也足够清楚。', tag: '项目进度跟踪会' },
+  { bad: 'I have no idea.', good: "I don't have the data yet; let me confirm and update the ticket.", why: '承认信息缺口的同时给出下一步动作，不会让讨论卡住。', tag: '站会 / 同步会' },
+  { bad: 'I am sorry for my poor English.', good: 'Let me rephrase that in a simpler way.', why: '不要自我否定，用 rephrase 把对话拉回内容本身。', tag: '通用' },
+  { bad: 'I think we can do it, maybe.', good: "We're on track for Friday, with one open dependency.", why: '先给结论再补条件，比模糊表态更可信、更可追踪。', tag: '项目进度跟踪会' },
+  { bad: 'You are wrong.', good: "I agree with the goal, but I'd question the ordering assumption.", why: '先认可目标，再把分歧收敛到一个可验证的具体假设。', tag: '技术研讨会' }
+];
+
+/* 外企缩写与黑话速查 */
+window.SITE_DATA.abbr = [
+  { term: 'EOD', full: 'End of Day', zh: '今天下班前', kind: '时间', example: 'Could you confirm by EOD?' },
+  { term: 'COB', full: 'Close of Business', zh: '营业结束前', kind: '时间', example: 'Please send it by COB Thursday.' },
+  { term: 'ETA', full: 'Estimated Time of Arrival', zh: '预计完成时间', kind: '时间', example: 'Any ETA on the credentials?' },
+  { term: 'TBD', full: 'To Be Determined', zh: '待定', kind: '时间', example: "Owner: TBD, we'll confirm in the sync." },
+  { term: 'OOO', full: 'Out Of Office', zh: '休假 / 不在岗', kind: '时间', example: "I'll be OOO next week; Alex is covering." },
+  { term: 'ASAP', full: 'As Soon As Possible', zh: '尽快（建议换成具体时间）', kind: '时间', example: 'Better: could we get this by Wednesday?' },
+  { term: 'PR', full: 'Pull Request', zh: '合并请求', kind: '流程', example: 'PR #482 is in review.' },
+  { term: 'LGTM', full: 'Looks Good To Me', zh: '我看没问题（review 通过）', kind: '流程', example: 'LGTM, one minor comment.' },
+  { term: 'WIP', full: 'Work In Progress', zh: '进行中', kind: '流程', example: 'Status: WIP, ETA Thursday.' },
+  { term: 'RFC', full: 'Request For Comments', zh: '方案征求意见稿', kind: '流程', example: "I'll put up an RFC before we commit." },
+  { term: 'FYI', full: 'For Your Information', zh: '供你知悉，无需动作', kind: '流程', example: 'FYI: the build is green again.' },
+  { term: 'PTAL', full: 'Please Take A Look', zh: '请看一下', kind: '流程', example: 'PTAL when you have a moment.' },
+  { term: 'P0', full: 'Priority 0', zh: '最高优先级故障', kind: '质量', example: 'This is a P0; we need a hotfix.' },
+  { term: 'p99', full: '99th percentile latency', zh: '99 分位延迟', kind: '质量', example: 'p99 latency is up 30% in staging.' },
+  { term: 'CI', full: 'Continuous Integration', zh: '持续集成', kind: '质量', example: 'CI has been red since Monday.' },
+  { term: 'SLO', full: 'Service Level Objective', zh: '服务等级目标', kind: '质量', example: "We're within the SLO for error rate." },
+  { term: 'canary', full: 'canary release', zh: '灰度 / 金丝雀发布', kind: '质量', example: 'Roll out to canary first.' },
+  { term: 'hotfix', full: 'hotfix', zh: '紧急修复', kind: '质量', example: 'We need a hotfix for v2.4.' },
+  { term: 'rollback', full: 'rollback', zh: '回滚', kind: '质量', example: 'Rollback plan is in the ticket.' },
+  { term: 'repro', full: 'reproduction steps', zh: '复现步骤', kind: '质量', example: 'Can you share a repro?' },
+  { term: 'flaky', full: 'flaky test', zh: '时好时坏的测试', kind: '质量', example: 'The integration test is flaky.' },
+  { term: 'bandwidth', full: 'capacity', zh: '人力 / 处理余量', kind: '协作', example: "We're short on bandwidth this sprint." },
+  { term: 'parking lot', full: 'parked topics', zh: '暂存议题', kind: '协作', example: "Let's put that in the parking lot." },
+  { term: 'action item', full: 'action item', zh: '行动项（需 owner 与截止时间）', kind: '协作', example: 'Every action item needs an owner and a due date.' }
+];
+
+/* Slack / Teams 成段消息模板（与邮件模板区分：更短、可扫读） */
+window.SITE_DATA.imTemplates = [
+  { id: 'im-01', name: '每日站会文字同步', scene: '远程站会或异步团队，用固定结构发进度。',
+    body: `Standup update for [DATE]
+- Yesterday: [TASK_A] merged, [TASK_B] in review
+- Today: [TASK_C] + load test
+- Blockers: none
+ETA for [MILESTONE]: [DATE_B]` },
+  { id: 'im-02', name: '阻塞求助', scene: '依赖不到位，点名跟进但保持客观语气。',
+    body: `Quick ask: we're blocked on [DEPENDENCY] from [TEAM].
+Requested on [DATE], no ETA yet.
+Impact: [IMPACT] on [MILESTONE].
+@[OWNER] could you take a look? Happy to jump on a quick call.` },
+  { id: 'im-03', name: '发布通知', scene: '版本上线后同步范围、状态与回滚方案。',
+    body: `Release update: [VERSION] deployed to [ENV] at [TIME].
+Scope: [ITEM_A], [ITEM_B].
+Metrics look stable. Rollback plan: [LINK].` },
+  { id: 'im-04', name: '请求 Code Review', scene: '催 review 但不显得催促，给出背景与截止时间。',
+    body: `PTAL: [PR] is ready for review.
+Context: [CONTEXT]. ~200 lines, mostly [MODULE].
+Would appreciate a look by [DATE] so we can make [MILESTONE].` },
+  { id: 'im-05', name: '风险提醒', scene: '风险刚出现时提前打招呼，避免临近里程碑才暴露。',
+    body: `Heads-up: [RISK] may affect [MILESTONE].
+Current ETA: [DATE]. Proposed mitigation: [ACTION].
+Full context: [LINK].` },
+  { id: 'im-06', name: '会议改期', scene: '临时调整同步会时间，议程与预读材料保持不变。',
+    body: `Hi [TEAM], moving the [MEETING] sync from [DATE] to [DATE_B] at [TIME].
+Reason: [REASON]. Agenda and pre-read stay the same: [LINK].
+Sorry for the short notice — please update your calendar.` }
+];
+
