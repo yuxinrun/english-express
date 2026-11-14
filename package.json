@@ -1,0 +1,13 @@
+{
+  "name": "english-express",
+  "version": "1.0.0",
+  "private": true,
+  "description": "技英快进 | 外企技术职场英语 —— 纯前端静态学习工具",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/input.css -o ./assets/css/tailwind.css --minify",
+    "watch:css": "tailwindcss -i ./src/input.css -o ./assets/css/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}

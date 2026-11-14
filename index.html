@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>技英快进 | 外企技术职场英语</title>
+  <meta name="description" content="给英语基础一般的大学生，快速学能用在外企的技术职场英语。只学技术研讨会、项目进度跟踪会、技术同步会议刚需句型。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23C88A65'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-size='15' font-weight='700' fill='white' font-family='sans-serif'%3EJE%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="assets/vendor/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/tailwind.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-warm-bg text-warm-ink">
+
+  <!-- ============ 顶部固定导航 ============ -->
+  <header id="siteHeader" class="site-header fixed top-0 inset-x-0 z-50">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8">
+      <div class="h-16 flex items-center justify-between gap-4">
+        <a href="#/home" data-route="home" class="flex items-center gap-2.5 shrink-0 no-underline">
+          <span class="w-9 h-9 rounded-xl bg-warm-accent/10 flex items-center justify-center">
+            <i class="fa-solid fa-bolt text-warm-accent text-sm"></i>
+          </span>
+          <span class="flex flex-col leading-tight">
+            <span class="text-[15px] font-bold text-warm-ink tracking-wide">技英快进</span>
+            <span class="text-[10px] text-warm-muted hidden sm:block">外企技术职场英语</span>
+          </span>
+        </a>
+
+        <nav class="hidden md:flex items-center gap-7" aria-label="主导航">
+          <a href="#/home" class="nav-link" data-route="home">首页</a>
+          <a href="#/phrases" class="nav-link" data-route="phrases">会议口语库</a>
+          <a href="#/progress" class="nav-link" data-route="progress">项目进度句型</a>
+          <a href="#/emails" class="nav-link" data-route="emails">技术邮件模板</a>
+          <a href="#/quiz" class="nav-link" data-route="quiz">练习自测</a>
+        </nav>
+
+        <div class="flex items-center gap-2">
+          <button id="favShortcut" type="button" class="hidden sm:inline-flex items-center gap-2 text-xs text-warm-muted border border-warm-line bg-white rounded-full px-3 py-1.5 transition-all duration-300 hover:border-warm-accent hover:text-warm-accent" title="查看我的收藏">
+            <i class="fa-solid fa-bookmark text-warm-accent"></i>
+            <span>收藏</span><span id="favTotalCount" class="font-en font-semibold">0</span>
+          </button>
+          <button id="menuToggle" type="button" class="md:hidden w-9 h-9 flex items-center justify-center rounded-lg border border-warm-line bg-white text-warm-ink transition-colors duration-300 hover:text-warm-accent" aria-label="展开菜单" aria-expanded="false">
+            <i id="menuIcon" class="fa-solid fa-bars text-sm"></i>
+          </button>
+        </div>
+      </div>
+
+      <div id="mobileMenu" class="md:hidden">
+        <nav class="pb-3 pt-1" aria-label="移动端导航">
+          <a href="#/home" class="mobile-nav-link" data-route="home">首页</a>
+          <a href="#/phrases" class="mobile-nav-link" data-route="phrases">会议口语库</a>
+          <a href="#/progress" class="mobile-nav-link" data-route="progress">项目进度句型</a>
+          <a href="#/emails" class="mobile-nav-link" data-route="emails">技术邮件模板</a>
+          <a href="#/quiz" class="mobile-nav-link" data-route="quiz">练习自测</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============ 1. 首页 ============ -->
+    <section id="view-home" class="view">
+      <!-- Hero -->
+      <div class="max-w-7xl mx-auto px-5 lg:px-8 pt-28 lg:pt-36 pb-16 lg:pb-24">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div>
+            <div class="eyebrow mb-5">
+              <i class="fa-solid fa-circle-check text-warm-blue"></i>
+              适合外企技术研讨会 · 项目进度跟踪会 · 技术同步会议
+            </div>
+            <h1 class="text-[30px] sm:text-[38px] lg:text-[44px] font-bold leading-[1.3] tracking-tight">
+              <span class="text-warm-accent">技英快进</span>｜普通大学生快速上手外企技术职场英语
+            </h1>
+            <p class="mt-6 text-[15px] lg:text-base text-warm-muted leading-[1.7]">
+              不用复杂语法，直接背会议能用的句子，适配技术研讨会、项目进度跟踪会、站会同步。
+            </p>
+
+            <div class="mt-8 flex flex-wrap gap-3">
+              <button type="button" class="btn btn-primary" data-goto="phrases">
+                <i class="fa-solid fa-comments text-[13px]"></i> 开始学习会议口语
+              </button>
+              <button type="button" class="btn btn-outline" data-goto="progress">
+                <i class="fa-solid fa-list-check text-[13px]"></i> 查看项目进度句型库
+              </button>
+            </div>
+
+            <div class="mt-9 note-box max-w-xl">
+              面向英语基础一般的同学，全部内容来自<strong>外企真实技术会议</strong>，不是课本英语；学完可以直接在会上开口、写进度同步消息。不做四六级、雅思托福应试内容。
+            </div>
+
+            <div class="mt-7 flex flex-wrap items-center gap-x-6 gap-y-2 text-[12.5px] text-warm-muted">
+              <span><i class="fa-solid fa-check text-warm-accent mr-1.5"></i>完整句型，替换项目名词即可用</span>
+              <span><i class="fa-solid fa-check text-warm-accent mr-1.5"></i>短句为主，碎片时间可背</span>
+            </div>
+          </div>
+
+          <!-- 简约暖色线性插画：技术会议白板 + 进度同步气泡 -->
+          <div class="relative">
+            <svg viewBox="0 0 600 470" class="w-full h-auto max-w-[560px] mx-auto" role="img" aria-label="外企技术会议简约线性插画：会议窗口、进度柱状图、行动项与英文同步气泡">
+              <defs>
+                <linearGradient id="heroBg" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#FFFDF8"/>
+                  <stop offset="100%" stop-color="#F5EEE5"/>
+                </linearGradient>
+              </defs>
+              <circle cx="300" cy="235" r="205" fill="url(#heroBg)"/>
+              <circle cx="300" cy="235" r="205" fill="none" stroke="#EAE7E2" stroke-width="1" stroke-dasharray="3 9"/>
+              <circle cx="74" cy="72" r="6" fill="#C88A65" opacity=".3"/>
+              <circle cx="536" cy="392" r="9" fill="#648B94" opacity=".2"/>
+              <circle cx="546" cy="88" r="4" fill="#C88A65" opacity=".35"/>
+              <circle cx="58" cy="300" r="4" fill="#648B94" opacity=".28"/>
+
+              <!-- 右上：会议信息气泡 -->
+              <rect x="356" y="34" width="204" height="56" rx="14" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.5"/>
+              <circle cx="380" cy="62" r="10" fill="#C88A65" opacity=".16"/>
+              <path d="M376 62h8 M380 58v8" stroke="#C88A65" stroke-width="1.4" stroke-linecap="round"/>
+              <text x="398" y="59" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#3A3A38">Project Sync · 10:00</text>
+              <text x="398" y="76" font-family="Inter, sans-serif" font-size="10" fill="#70706C">weekly progress tracking</text>
+
+              <!-- 主会议窗口 -->
+              <rect x="76" y="112" width="428" height="252" rx="18" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.5"/>
+              <path d="M76 150H504" stroke="#EAE7E2" stroke-width="1.2"/>
+              <circle cx="98" cy="131" r="4" fill="#E4DED6"/>
+              <circle cx="112" cy="131" r="4" fill="#E4DED6"/>
+              <circle cx="126" cy="131" r="4" fill="#E4DED6"/>
+              <text x="150" y="135" font-family="Inter, sans-serif" font-size="10.5" font-weight="600" fill="#70706C">Tech Sync / Status</text>
+              <rect x="428" y="124" width="58" height="15" rx="7.5" fill="#F5F1EB"/>
+              <text x="440" y="135" font-family="Inter, sans-serif" font-size="8.5" fill="#70706C">LIVE</text>
+
+              <!-- 左：进度柱状图白板 -->
+              <rect x="100" y="168" width="220" height="124" rx="10" fill="#FFFDF8" stroke="#EAE7E2"/>
+              <text x="114" y="188" font-family="Inter, sans-serif" font-size="9.5" font-weight="600" fill="#70706C">Sprint progress</text>
+              <path d="M114 276H306" stroke="#EAE7E2" stroke-width="1"/>
+              <rect x="124" y="236" width="18" height="40" rx="3" fill="#C88A65" opacity=".4"/>
+              <rect x="158" y="224" width="18" height="52" rx="3" fill="#648B94" opacity=".35"/>
+              <rect x="192" y="230" width="18" height="46" rx="3" fill="#C88A65" opacity=".4"/>
+              <rect x="226" y="210" width="18" height="66" rx="3" fill="#648B94" opacity=".35"/>
+              <rect x="260" y="200" width="18" height="76" rx="3" fill="#C88A65" opacity=".55"/>
+              <path d="M133 228 L167 216 L201 220 L235 200 L269 192" fill="none" stroke="#C88A65" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="133" cy="228" r="2.6" fill="#FFFFFF" stroke="#C88A65" stroke-width="1.4"/>
+              <circle cx="201" cy="220" r="2.6" fill="#FFFFFF" stroke="#C88A65" stroke-width="1.4"/>
+              <circle cx="269" cy="192" r="2.6" fill="#FFFFFF" stroke="#C88A65" stroke-width="1.4"/>
+
+              <!-- 右：行动项列表 -->
+              <rect x="334" y="168" width="146" height="124" rx="10" fill="#FFFDF8" stroke="#EAE7E2"/>
+              <text x="348" y="188" font-family="Inter, sans-serif" font-size="9.5" font-weight="600" fill="#70706C">Action items</text>
+              <circle cx="353" cy="210" r="5" fill="#648B94" opacity=".55"/>
+              <rect x="365" y="204" width="94" height="6" rx="3" fill="#E8E3DB"/>
+              <rect x="365" y="214" width="58" height="5" rx="2.5" fill="#F1EDE7"/>
+              <circle cx="353" cy="240" r="5" fill="#C88A65" opacity=".55"/>
+              <rect x="365" y="234" width="80" height="6" rx="3" fill="#E8E3DB"/>
+              <rect x="365" y="244" width="66" height="5" rx="2.5" fill="#F1EDE7"/>
+              <circle cx="353" cy="270" r="5" fill="#648B94" opacity=".55"/>
+              <rect x="365" y="264" width="88" height="6" rx="3" fill="#E8E3DB"/>
+              <rect x="365" y="274" width="48" height="5" rx="2.5" fill="#F1EDE7"/>
+
+              <!-- 窗口底部：参会者与会议控制条 -->
+              <path d="M100 310H480" stroke="#F0ECE6" stroke-width="1"/>
+              <circle cx="140" cy="334" r="14" fill="#F6EFE7" stroke="#EAE7E2"/>
+              <circle cx="140" cy="330" r="4.5" fill="#C88A65" opacity=".55"/>
+              <path d="M132 343a8 8 0 0 1 16 0" fill="#C88A65" opacity=".32"/>
+              <circle cx="174" cy="334" r="14" fill="#F6EFE7" stroke="#EAE7E2"/>
+              <circle cx="174" cy="330" r="4.5" fill="#648B94" opacity=".55"/>
+              <path d="M166 343a8 8 0 0 1 16 0" fill="#648B94" opacity=".3"/>
+              <circle cx="208" cy="334" r="14" fill="#F6EFE7" stroke="#EAE7E2"/>
+              <circle cx="208" cy="330" r="4.5" fill="#C88A65" opacity=".45"/>
+              <path d="M200 343a8 8 0 0 1 16 0" fill="#C88A65" opacity=".28"/>
+              <rect x="286" y="326" width="122" height="17" rx="8.5" fill="#F6EFE7"/>
+              <circle cx="312" cy="334.5" r="3.5" fill="#C88A65" opacity=".5"/>
+              <circle cx="347" cy="334.5" r="3.5" fill="#648B94" opacity=".45"/>
+              <circle cx="382" cy="334.5" r="3.5" fill="#C9C2B8"/>
+
+              <!-- 左下：英文同步气泡 -->
+              <rect x="16" y="352" width="244" height="66" rx="14" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.5"/>
+              <rect x="32" y="368" width="3" height="34" rx="1.5" fill="#C88A65" opacity=".7"/>
+              <text x="46" y="380" font-family="Inter, sans-serif" font-size="11.5" font-weight="600" fill="#3A3A38">No blockers on my side.</text>
+              <text x="46" y="399" font-family="Inter, sans-serif" font-size="10.5" fill="#70706C">We're on track for Friday.</text>
+
+              <!-- 右下：会议适用标签 -->
+              <rect x="398" y="384" width="164" height="34" rx="17" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.5"/>
+              <circle cx="420" cy="401" r="7.5" fill="#648B94" opacity=".16"/>
+              <path d="M416.5 401l2.6 2.6 4.6-5" fill="none" stroke="#648B94" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <text x="436" y="405" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="10.5" font-weight="600" fill="#648B94">适合技术会议</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 个核心优势 -->
+      <div class="border-t border-warm-line bg-white/60">
+        <div class="max-w-7xl mx-auto px-5 lg:px-8 py-14 lg:py-16">
+          <div class="grid md:grid-cols-3 gap-5">
+            <div class="card card-hover p-6">
+              <div class="w-10 h-10 rounded-xl bg-warm-accent/10 flex items-center justify-center mb-4">
+                <i class="fa-solid fa-crosshairs text-warm-accent"></i>
+              </div>
+              <h3 class="text-[16px] font-bold">场景精准</h3>
+              <p class="mt-2 text-[13.5px] text-warm-muted leading-[1.7]">只学技术研讨会、项目同步会刚需英语。每一句都标注<span class="text-warm-accent font-semibold">适合技术会议</span>，不做应试内容。</p>
+            </div>
+            <div class="card card-hover p-6">
+              <div class="w-10 h-10 rounded-xl bg-warm-blue/10 flex items-center justify-center mb-4">
+                <i class="fa-solid fa-pen-to-square text-warm-blue"></i>
+              </div>
+              <h3 class="text-[16px] font-bold">拿来即用</h3>
+              <p class="mt-2 text-[13.5px] text-warm-muted leading-[1.7]">完整句型，直接替换项目名词就能使用。每条都附使用说明与替换提示，不用自己改写语法。</p>
+            </div>
+            <div class="card card-hover p-6">
+              <div class="w-10 h-10 rounded-xl bg-warm-accent/10 flex items-center justify-center mb-4">
+                <i class="fa-solid fa-feather text-warm-accent"></i>
+              </div>
+              <h3 class="text-[16px] font-bold">轻量化学习</h3>
+              <p class="mt-2 text-[13.5px] text-warm-muted leading-[1.7]">短句为主，适合碎片时间背诵，无复杂长难句。收藏、搜索、自测都在本地完成。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 覆盖场景 -->
+      <div class="max-w-7xl mx-auto px-5 lg:px-8 py-14 lg:py-16">
+        <span class="eyebrow"><i class="fa-solid fa-layer-group"></i> WHERE YOU ACTUALLY USE IT</span>
+        <h2 class="title-underline mt-3 text-[24px] lg:text-[28px] font-bold">覆盖你真正会遇到的会议</h2>
+        <p class="mt-5 text-[14px] text-warm-muted max-w-2xl">所有内容围绕外企技术研讨会、项目进度跟踪会与技术同步会议展开，兼顾会后线上沟通与邮件。</p>
+        <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="card card-hover p-5 flex gap-4 items-start">
+            <i class="fa-solid fa-users-line text-warm-accent mt-1"></i>
+            <div><h3 class="text-[14px] font-semibold">技术研讨会 / 方案评审</h3><p class="mt-1 text-[12.5px] text-warm-muted">提出疑问、讨论方案、礼貌表达不同意</p><span class="fit-badge mt-2"><i class="fa-solid fa-check"></i>适合技术会议</span></div>
+          </div>
+          <div class="card card-hover p-5 flex gap-4 items-start">
+            <i class="fa-solid fa-chart-line text-warm-blue mt-1"></i>
+            <div><h3 class="text-[14px] font-semibold">项目进度跟踪会</h3><p class="mt-1 text-[12.5px] text-warm-muted">汇报进展、延期风险、依赖阻塞、风险上报</p><span class="fit-badge mt-2"><i class="fa-solid fa-check"></i>适合技术会议</span></div>
+          </div>
+          <div class="card card-hover p-5 flex gap-4 items-start">
+            <i class="fa-solid fa-rotate text-warm-accent mt-1"></i>
+            <div><h3 class="text-[14px] font-semibold">技术同步会议 / 每日站会</h3><p class="mt-1 text-[12.5px] text-warm-muted">开场破冰、快速同步、收尾总结行动项</p><span class="fit-badge mt-2"><i class="fa-solid fa-check"></i>适合技术会议</span></div>
+          </div>
+          <div class="card card-hover p-5 flex gap-4 items-start">
+            <i class="fa-solid fa-comment-dots text-warm-blue mt-1"></i>
+            <div><h3 class="text-[14px] font-semibold">线上沟通 / Slack · Teams</h3><p class="mt-1 text-[12.5px] text-warm-muted">文字同步版本，短、可扫读、带 ETA 与链接</p><span class="fit-badge mt-2"><i class="fa-solid fa-check"></i>适合技术会议</span></div>
+          </div>
+          <div class="card card-hover p-5 flex gap-4 items-start">
+            <i class="fa-solid fa-envelope-open-text text-warm-accent mt-1"></i>
+            <div><h3 class="text-[14px] font-semibold">技术同步 / 进度汇报邮件</h3><p class="mt-1 text-[12.5px] text-warm-muted">主题、正文、落款齐全，[ ] 占位符直接替换</p><span class="fit-badge mt-2"><i class="fa-solid fa-check"></i>适合技术会议</span></div>
+          </div>
+          <div class="card card-hover p-5 flex gap-4 items-start">
+            <i class="fa-solid fa-code-branch text-warm-blue mt-1"></i>
+            <div><h3 class="text-[14px] font-semibold">版本同步 / 发布协调</h3><p class="mt-1 text-[12.5px] text-warm-muted">code freeze、范围锁定、回滚方案、demo 安排</p><span class="fit-badge mt-2"><i class="fa-solid fa-check"></i>适合技术会议</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 会议流程速查 -->
+      <div class="border-t border-warm-line bg-white/60">
+        <div class="max-w-7xl mx-auto px-5 lg:px-8 py-14 lg:py-16">
+          <span class="eyebrow"><i class="fa-solid fa-route"></i> MEETING FLOW</span>
+          <h2 class="title-underline mt-3 text-[24px] lg:text-[28px] font-bold">一场技术会议，5 步怎么说</h2>
+          <p class="mt-5 text-[14px] text-warm-muted max-w-2xl">按外企技术研讨会、项目进度跟踪会的真实流程排列。点任意一步，直接跳到对应分类的全部句型。</p>
+          <div id="flowStrip" class="mt-8 grid sm:grid-cols-2 lg:grid-cols-5 gap-3"></div>
+        </div>
+      </div>
+
+      <!-- 技术会议高频词速查 -->
+      <div class="max-w-7xl mx-auto px-5 lg:px-8 py-14 lg:py-16">
+        <span class="eyebrow"><i class="fa-solid fa-book"></i> GLOSSARY</span>
+        <h2 class="title-underline mt-3 text-[24px] lg:text-[28px] font-bold">技术会议高频词速查</h2>
+        <p class="mt-5 text-[14px] text-warm-muted max-w-2xl">这些词在进度跟踪会、技术同步会里几乎每次都会出现。点小喇叭可听发音，先记住它们再背整句。</p>
+        <div id="glossaryGrid" class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
+      </div>
+
+      <!-- 今日一句（轻量交互） -->
+      <div class="max-w-7xl mx-auto px-5 lg:px-8 pb-14 lg:pb-20">
+        <div class="card p-6 lg:p-8 flex flex-col lg:flex-row lg:items-center gap-6">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 text-[12px] text-warm-accent font-semibold">
+              <i class="fa-solid fa-quote-left"></i> 今日一句 · 适合技术会议
+            </div>
+            <div class="mt-3 flex items-start gap-2">
+              <p id="heroDailyEn" class="phrase-en text-[16px] lg:text-[17px] flex-1">—</p>
+              <button id="dailySpeak" type="button" class="speak-btn" data-speak="" aria-label="朗读这句英文" title="朗读这句英文"><i class="fa-solid fa-volume-high text-[12px]"></i></button>
+            </div>
+            <p id="heroDailyZh" class="phrase-zh mt-2">—</p>
+            <p id="heroDailyFit" class="mt-3 text-[12px] text-warm-blue"></p>
+          </div>
+          <div class="flex gap-2 shrink-0">
+            <button id="dailyRefresh" type="button" class="btn btn-quiet"><i class="fa-solid fa-rotate-right text-[12px]"></i> 换一句</button>
+            <button id="dailyFav" type="button" class="btn btn-outline"><i class="fa-regular fa-bookmark text-[12px]"></i> 收藏这句</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 2. 会议口语库 ============ -->
+    <section id="view-phrases" class="view hidden">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8 pt-28 pb-16">
+        <span class="eyebrow"><i class="fa-solid fa-comments"></i> CORE · MEETING PHRASES</span>
+        <h2 class="title-underline mt-3 text-[27px] lg:text-[32px] font-bold">会议口语库</h2>
+        <p class="mt-5 text-[14px] text-warm-muted max-w-3xl">按外企技术会议的真实流程分类：从开场破冰到收尾总结。每条包含英文原句、中文翻译、使用说明与替换提示。</p>
+        <div class="mt-6 note-box max-w-3xl">
+          <strong>适合技术会议：</strong>全部句子适用于<strong>外企技术研讨会、项目进度跟踪会、技术同步会议</strong>。不用复杂语法，直接背下来就能在会上开口。
+        </div>
+
+        <!-- 工具栏 -->
+        <div class="mt-8 flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between">
+          <div class="relative w-full lg:max-w-sm">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-warm-muted text-[13px]"></i>
+            <input id="phraseSearch" class="field" type="search" placeholder="搜索关键词：block / delay / risk / demo" autocomplete="off">
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="phraseFavoriteOnly" type="button" class="switch"><i class="fa-regular fa-bookmark"></i> 只看收藏 <span id="phraseFavCount" class="font-en font-semibold">0</span></button>
+            <button id="phraseReset" type="button" class="btn btn-quiet !py-2 !px-3.5"><i class="fa-solid fa-eraser text-[12px]"></i> 重置</button>
+          </div>
+        </div>
+
+        <div id="phraseTabs" class="mt-5 flex flex-wrap gap-2"></div>
+        <div class="mt-6 mb-4 flex items-center justify-between text-[12.5px] text-warm-muted">
+          <span>共 <strong id="phraseCount" class="font-en text-warm-accent font-bold">0</strong> 条句型 · 每条均标注适合技术会议</span>
+          <span class="hidden sm:inline"><i class="fa-solid fa-star text-warm-accent mr-1"></i>点击卡片右上角可收藏</span>
+        </div>
+
+        <div id="phraseGrid" class="grid md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+        <div id="phraseEmpty" class="hidden card p-12 text-center">
+          <i class="fa-solid fa-magnifying-glass text-warm-accent/60 text-2xl"></i>
+          <p class="mt-3 text-[14px] text-warm-muted">没有匹配的句子，换个关键词或点击「重置」。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 3. 项目进度句型 ============ -->
+    <section id="view-progress" class="view hidden">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8 pt-28 pb-16">
+        <span class="eyebrow"><i class="fa-solid fa-list-check"></i> PROJECT TRACKING</span>
+        <h2 class="title-underline mt-3 text-[27px] lg:text-[32px] font-bold">项目进度句型</h2>
+        <p class="mt-5 text-[14px] text-warm-muted max-w-3xl">专门针对项目跟踪会、每日站会与进度同步。同一场景分别给出会上说的版本与会后发的版本。</p>
+        <div class="mt-6 grid sm:grid-cols-2 gap-3 max-w-3xl">
+          <div class="note-box"><strong>口头会议版本：</strong>外企项目进度跟踪会、站会上直接开口说，短句、给结论。</div>
+          <div class="note-box"><strong>文字同步版本：</strong>Slack / Teams / 邮件里发，带状态、ETA、链接，方便扫读与追踪。</div>
+        </div>
+
+        <div class="mt-8 flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between">
+          <div class="relative w-full lg:max-w-sm">
+            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-warm-muted text-[13px]"></i>
+            <input id="progressSearch" class="field" type="search" placeholder="搜索关键词：block / delay / risk / ETA" autocomplete="off">
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="progressFavoriteOnly" type="button" class="switch"><i class="fa-regular fa-bookmark"></i> 只看收藏 <span id="progressFavCount" class="font-en font-semibold">0</span></button>
+            <button id="progressReset" type="button" class="btn btn-quiet !py-2 !px-3.5"><i class="fa-solid fa-eraser text-[12px]"></i> 重置</button>
+          </div>
+        </div>
+
+        <div id="progressTabs" class="mt-5 flex flex-wrap gap-2"></div>
+        <div class="mt-3 flex flex-wrap items-center gap-2">
+          <span class="text-[12px] text-warm-muted mr-1"><i class="fa-solid fa-filter mr-1"></i>表达形式：</span>
+          <div id="progressModeTabs" class="flex flex-wrap gap-2"></div>
+        </div>
+        <div class="mt-6 mb-4 text-[12.5px] text-warm-muted">
+          共 <strong id="progressCount" class="font-en text-warm-accent font-bold">0</strong> 条句型 · 每条均标注适合技术会议与项目进度跟踪会
+        </div>
+
+        <div id="progressGrid" class="grid md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+        <div id="progressEmpty" class="hidden card p-12 text-center">
+          <i class="fa-solid fa-magnifying-glass text-warm-accent/60 text-2xl"></i>
+          <p class="mt-3 text-[14px] text-warm-muted">没有匹配的句子，换个关键词或点击「重置」。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4. 技术邮件模板 ============ -->
+    <section id="view-emails" class="view hidden">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8 pt-28 pb-16">
+        <span class="eyebrow"><i class="fa-solid fa-envelope-open-text"></i> EMAIL TEMPLATES</span>
+        <h2 class="title-underline mt-3 text-[27px] lg:text-[32px] font-bold">技术邮件模板</h2>
+        <p class="mt-5 text-[14px] text-warm-muted max-w-3xl">外企技术同步、进度汇报、问题升级与会议纪要模板。分邮件主题、正文、结尾落款三段，一键复制全部文本。</p>
+        <div class="mt-6 note-box max-w-3xl">
+          <strong>适合技术会议：</strong>用于外企技术研讨会、项目进度跟踪会的会前邀约与会后书面沉淀。正文中所有 <strong>[XXX] 占位符</strong>都需要替换为自己的项目名、版本、时间与负责人。
+        </div>
+
+        <div class="mt-8 grid lg:grid-cols-[250px_minmax(0,1fr)] gap-5 items-start">
+          <div id="emailList" class="flex gap-2 overflow-x-auto pb-2 lg:block lg:space-y-2 lg:overflow-visible lg:pb-0"></div>
+          <div id="emailDetail"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 5. 练习自测 ============ -->
+    <section id="view-quiz" class="view hidden">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8 pt-28 pb-16">
+        <span class="eyebrow"><i class="fa-solid fa-clipboard-check"></i> PRACTICE & SELF-CHECK</span>
+        <h2 class="title-underline mt-3 text-[27px] lg:text-[32px] font-bold">练习自测</h2>
+        <p class="mt-5 text-[14px] text-warm-muted max-w-3xl">给中文场景，选出最合适的英文表达。提交后显示答案与解析，解析会说明这个句子适合会议还是文字沟通。</p>
+        <div class="mt-6 note-box max-w-3xl">
+          <strong>适合技术会议：</strong>题目全部来自外企技术研讨会、项目进度跟踪会与 Slack/Teams 文字同步场景。成绩记录只保存在本地浏览器。
+        </div>
+
+        <div id="quizStats" class="mt-8 grid sm:grid-cols-3 gap-4"></div>
+
+        <form id="quizForm" class="mt-8">
+          <div id="quizList" class="grid lg:grid-cols-2 gap-4 items-start"></div>
+          <div id="quizActions" class="mt-7 flex flex-wrap gap-3">
+            <button id="quizSubmit" type="submit" class="btn btn-primary"><i class="fa-solid fa-circle-check text-[13px]"></i> 提交并查看解析</button>
+            <button id="quizReset" type="button" class="btn btn-quiet"><i class="fa-solid fa-rotate-right text-[12px]"></i> 重新作答</button>
+          </div>
+        </form>
+
+        <div id="quizResult" class="hidden mt-6 card p-6"></div>
+
+        <div class="mt-12">
+          <h3 class="text-[16px] font-bold flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-warm-blue text-[14px]"></i> 自测记录</h3>
+          <div id="quizHistory" class="mt-4"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ 页脚 ============ -->
+  <footer class="border-t border-warm-line bg-white/60">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8 py-9 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <p class="text-[14px] font-bold">技英快进 <span class="text-warm-muted font-normal">| 外企技术职场英语</span></p>
+        <p class="mt-1 text-[12.5px] text-warm-muted">专为外企技术会议打造，拒绝无效英语学习。</p>
+      </div>
+      <div class="text-[12px] text-warm-muted">
+        <p>© 2026 技英快进 · 纯前端静态学习工具，无需后端</p>
+        <p class="mt-1">适合外企技术研讨会 · 项目进度跟踪会 · 技术同步会议</p>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/audio-manifest.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

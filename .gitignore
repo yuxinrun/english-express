@@ -1,0 +1,12 @@
+# 开发依赖与构建中间产物（线上站点只发布 index.html + assets/）
+node_modules/
+_site/
+
+# 本地工具与缓存
+.playwright-cli/
+__pycache__/
+*.pyc
+
+# 系统文件
+.DS_Store
+Thumbs.db
