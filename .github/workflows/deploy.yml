@@ -26,11 +26,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 首次运行时自动启用 Pages 并把 Source 设为 GitHub Actions
+      # 读取 Pages 配置（仓库需已启用 Pages，且 Source 为 GitHub Actions）
       - name: Setup Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: Assemble static site
         run: |
