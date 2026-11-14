@@ -59,15 +59,16 @@
   };
 
   /* ---------- 英文发音 ----------
-     优先播放 assets/audio/ 下的离线 MP3（不依赖系统语音包，任何浏览器都有声音）；
-     音频缺失时才回退到浏览器内置 Web Speech API。
-     文件名 = 英文原文的 FNV-1a 哈希，由 tools/generate_audio.py 批量生成。
+     主路径：浏览器内置 Web Speech API，无需下载音频，新增句子立即可读。
+     兜底：仅当 TTS 不可用或 1.6 秒内没出声时，才播放已有的离线 MP3；
+     清单里没有对应音频的句子不会产生 404 请求。
      再点同一个按钮 = 停止；切换页面 / 换一句时自动停止。 */
   const synth = window.speechSynthesis || null;
   let activeBtn = null;
   let currentAudio = null;
   let speakToken = 0;
   let utteranceRef = null;   // Chrome 需要保留引用，否则 utterance 被回收会静音
+  let startWatchdog = null;
 
   function readable(en) {
     return String(en).replace(/\[([A-Z_0-9]+)\]/g, (_, key) => {
@@ -95,6 +96,7 @@
 
   function stopSpeak() {
     speakToken++;
+    if (startWatchdog) { clearTimeout(startWatchdog); startWatchdog = null; }
     if (currentAudio) {
       currentAudio.pause();
       if (currentAudio._onEnded) currentAudio.removeEventListener('ended', currentAudio._onEnded);
@@ -106,14 +108,54 @@
     if (activeBtn) { markSpeakButton(activeBtn, false); activeBtn = null; }
   }
 
-  // 兜底：浏览器内置语音，仅在 MP3 不存在 / 播放失败时启用
-  function speakWithBrowser(text, btn) {
-    if (!synth || !window.SpeechSynthesisUtterance) {
+  // 兜底：只播放清单内已有的离线 MP3，缺失的键不发起请求
+  function playAudioFallback(text) {
+    const manifest = window.AUDIO_MANIFEST;
+    if (!manifest) return false;
+    const key = audioKey(text);
+    if (!manifest.has(key)) return false;
+
+    const audio = new Audio('assets/audio/' + key + '.mp3');
+    currentAudio = audio;
+    let done = false;
+    audio._onEnded = () => {
+      if (done) return;
+      done = true;
+      if (currentAudio === audio) currentAudio = null;
       stopSpeak();
-      toast('当前浏览器不支持语音朗读，建议使用 Chrome 或 Edge');
-      return;
-    }
+    };
+    audio._onError = () => {
+      if (done) return;
+      done = true;
+      audio.pause();
+      if (currentAudio === audio) currentAudio = null;
+      stopSpeak();
+      toast('朗读未能播放，请检查浏览器语音设置');
+    };
+    audio.addEventListener('ended', audio._onEnded);
+    audio.addEventListener('error', audio._onError);
+    const p = audio.play();
+    if (p && typeof p.catch === 'function') p.catch(audio._onError);
+    return true;
+  }
+
+  // 主路径：浏览器内置语音（en-US，语速 0.92）
+  function speakWithBrowser(text) {
     const token = ++speakToken;
+    let failed = false;
+    const fail = () => {
+      if (failed || token !== speakToken) return;
+      failed = true;
+      if (startWatchdog) { clearTimeout(startWatchdog); startWatchdog = null; }
+      if (synth) synth.cancel();
+      utteranceRef = null;
+      if (playAudioFallback(text)) return;   // 回退时保持按钮播放态
+      stopSpeak();
+      toast('浏览器朗读未能出声，请检查系统英文语音包或改用 Chrome / Edge');
+    };
+
+    if (!synth || !window.SpeechSynthesisUtterance) { fail(); return; }
+
     const utter = new SpeechSynthesisUtterance(readable(text));
     utter.lang = 'en-US';
     utter.rate = 0.92;
@@ -124,14 +166,24 @@
     const voice = voices.find((v) => /^en[-_]US/i.test(v.lang)) || voices.find((v) => /^en/i.test(v.lang));
     if (voice) utter.voice = voice;
 
-    utter.onend = () => { if (token === speakToken) stopSpeak(); };
-    utter.onerror = () => {
-      if (token !== speakToken) return;
-      stopSpeak();
-      toast('朗读未能播放，请检查浏览器语音设置');
+    let started = false;
+    utter.onstart = () => {
+      started = true;
+      if (startWatchdog) { clearTimeout(startWatchdog); startWatchdog = null; }
     };
+    utter.onend = () => { if (token === speakToken && !failed) stopSpeak(); };
+    utter.onerror = (e) => {
+      if (token !== speakToken || started) return;
+      if (e && (e.error === 'interrupted' || e.error === 'canceled')) { stopSpeak(); return; }
+      fail();
+    };
+
     if (synth.paused) synth.resume();
     synth.speak(utter);   // 同步调用，保持在用户手势栈内
+    // 静默失败保护：TTS 没触发 onstart 时改用已有的离线 MP3
+    startWatchdog = setTimeout(() => {
+      if (token === speakToken && !started) fail();
+    }, 1600);
   }
 
   function speak(btn) {
@@ -142,36 +194,7 @@
     if (!text.trim()) return;
     activeBtn = btn;
     markSpeakButton(btn, true);
-
-    const key = audioKey(text);
-    const manifest = window.AUDIO_MANIFEST;
-    // 新增句子还没生成音频时，直接走浏览器朗读，不发起 404 请求
-    if (manifest && !manifest.has(key)) { speakWithBrowser(text, btn); return; }
-
-    const audio = new Audio('assets/audio/' + key + '.mp3');
-    currentAudio = audio;
-    let done = false;
-
-    const fallback = () => {
-      if (done || activeBtn !== btn) return;
-      done = true;
-      audio.pause();
-      if (currentAudio === audio) currentAudio = null;
-      speakWithBrowser(text, btn);
-    };
-
-    audio._onEnded = () => {
-      if (done) return;
-      done = true;
-      if (currentAudio === audio) currentAudio = null;
-      if (activeBtn === btn) stopSpeak();
-    };
-    audio._onError = fallback;
-    audio.addEventListener('ended', audio._onEnded);
-    audio.addEventListener('error', fallback);
-
-    const p = audio.play();
-    if (p && typeof p.catch === 'function') p.catch(fallback);
+    speakWithBrowser(text);
   }
 
   /* ---------- 全局状态 ---------- */
@@ -715,17 +738,52 @@
   /* ---------- 扩展内容区块 ----------
      新区块由 JS 挂载到对应页面末尾，index.html 无需改动；
      [data-speak] 复用全局发音委托，局部交互在此函数内自行绑定。 */
+  // 统一的区块标题：右侧可挂一张内联 SVG 配图
+  function sectionHead(icon, eyebrow, title, desc, illus) {
+    const art = illus ? '<div class="section-illus hidden sm:block" data-illus="' + illus + '"></div>' : '';
+    return `
+      <div class="flex items-start justify-between gap-6">
+        <div class="max-w-2xl">
+          <span class="eyebrow"><i class="fa-solid ${icon}"></i> ${eyebrow}</span>
+          <h2 class="title-underline mt-3 text-[24px] lg:text-[28px] font-bold">${title}</h2>
+          <p class="mt-5 text-[14px] text-warm-muted">${desc}</p>
+        </div>
+        ${art}
+      </div>`;
+  }
+
+  // 把 data-illus 占位填充为 data.js 里的内联 SVG
+  function renderIllustrations() {
+    const ill = window.SITE_ILLUS || {};
+    document.querySelectorAll('[data-illus]').forEach((slot) => {
+      const svg = ill[slot.getAttribute('data-illus')];
+      if (svg) slot.innerHTML = svg;
+    });
+  }
+
   function renderExtras() {
-    // 1) 首页：外企缩写与黑话速查
+    // 1) 首页：外企缩写与黑话速查 + 4 步学习路径
     $('view-home').insertAdjacentHTML('beforeend', `
       <div class="border-t border-warm-line bg-white/60">
         <div class="max-w-7xl mx-auto px-5 lg:px-8 py-14 lg:py-16">
-          <span class="eyebrow"><i class="fa-solid fa-spell-check"></i> ABBREVIATIONS</span>
-          <h2 class="title-underline mt-3 text-[24px] lg:text-[28px] font-bold">外企缩写与黑话速查</h2>
-          <p class="mt-5 text-[14px] text-warm-muted max-w-2xl">EOD、LGTM、WIP、p99 在真实外企沟通里每天都会出现。点小喇叭听例句，先听懂再开口。</p>
+          ${sectionHead('fa-spell-check', 'ABBREVIATIONS', '外企缩写与黑话速查', 'EOD、LGTM、WIP、p99 在真实外企沟通里每天都会出现。点小喇叭听例句，先听懂再开口。', 'abbr')}
           <div id="abbrGrid" class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
         </div>
+      </div>
+      <div class="border-t border-warm-line max-w-7xl mx-auto px-5 lg:px-8 py-14 lg:py-16">
+        ${sectionHead('fa-route', 'LEARNING PATH', '4 步上手：从听懂到开口', '不用从头学语法。按这条路径走一遍，就能覆盖一场技术会议从听懂、开口到会后同步的完整链路。', null)}
+        <div class="illus-slot illus-path mt-8 hidden md:block" data-illus="path"></div>
+        <div id="pathGrid" class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
       </div>`);
+    $('pathGrid').innerHTML = D.learningPath.map((p) => `
+      <div class="card card-hover p-5 flex flex-col">
+        <div class="flex items-center gap-2.5">
+          <span class="path-step">${esc(p.step)}</span>
+          <h3 class="text-[14px] font-bold">${esc(p.title)}</h3>
+        </div>
+        <p class="mt-3 text-[12.5px] text-warm-muted leading-[1.7] flex-1">${esc(p.desc)}</p>
+        <button type="button" class="btn btn-quiet !py-1.5 !px-3 mt-4 self-start" data-goto="${esc(p.route)}">${esc(p.action)}<i class="fa-solid fa-arrow-right ml-1.5 text-[10px]"></i></button>
+      </div>`).join('');
     $('abbrGrid').innerHTML = D.abbr.map((a) => `
       <div class="card card-hover p-4">
         <div class="flex items-start justify-between gap-2">
@@ -741,15 +799,24 @@
         <p class="mt-2 text-[11px] text-warm-accent"><i class="fa-solid fa-check mr-1"></i>适合技术会议</p>
       </div>`).join('');
 
-    // 2) 会议口语库：真实会议对话（tab 切换）
+    // 2) 会议口语库：真实会议对话 + Code Review 表达 + 会议主持脚本
     $('view-phrases').insertAdjacentHTML('beforeend', `
       <div class="border-t border-warm-line bg-white/60">
         <div class="max-w-7xl mx-auto px-5 lg:px-8 py-14 lg:py-16">
-          <span class="eyebrow"><i class="fa-solid fa-comments"></i> REAL MEETING DIALOGUES</span>
-          <h2 class="title-underline mt-3 text-[24px] lg:text-[28px] font-bold">真实会议对话</h2>
-          <p class="mt-5 text-[14px] text-warm-muted max-w-2xl">孤立句子背下来还不够。按外企真实会议流程跟读整段对话，学会一句话接一句话。</p>
+          ${sectionHead('fa-comments', 'REAL MEETING DIALOGUES', '真实会议对话', '孤立句子背下来还不够。按外企真实会议流程跟读整段对话，学会一句话接一句话。', 'dialogue')}
           <div id="dialogueTabs" class="mt-7 flex flex-wrap gap-2"></div>
           <div id="dialogueBody" class="mt-6"></div>
+        </div>
+      </div>
+      <div class="border-t border-warm-line max-w-7xl mx-auto px-5 lg:px-8 py-14 lg:py-16">
+        ${sectionHead('fa-code-pull-request', 'CODE REVIEW PHRASES', 'Code Review 与方案评审表达', '评审里最难的不是看懂代码，而是把质疑说得具体又不冒犯。按「提问 / 建议 / 风险 / 通过」四类记忆，点小喇叭跟读。', 'review')}
+        <div id="reviewTabs" class="mt-7 flex flex-wrap gap-2"></div>
+        <div id="reviewGrid" class="mt-6 grid md:grid-cols-2 gap-3"></div>
+      </div>
+      <div class="border-t border-warm-line bg-white/60">
+        <div class="max-w-7xl mx-auto px-5 lg:px-8 py-14 lg:py-16">
+          ${sectionHead('fa-microphone-lines', 'MEETING SCRIPTS', '会议主持脚本（开场 → 收尾）', '不敢开口主持？把整段脚本背下来就够了。四段覆盖开场对齐、议程时间盒、控场岔题、收尾行动项，可整段复制。', 'script')}
+          <div id="scriptGrid" class="mt-8 grid md:grid-cols-2 gap-4"></div>
         </div>
       </div>`);
     const dTabs = $('dialogueTabs');
@@ -795,16 +862,12 @@
     $('view-progress').insertAdjacentHTML('beforeend', `
       <div class="border-t border-warm-line bg-white/60">
         <div class="max-w-7xl mx-auto px-5 lg:px-8 py-14 lg:py-16">
-          <span class="eyebrow"><i class="fa-solid fa-code-compare"></i> COMMON MISTAKES</span>
-          <h2 class="title-underline mt-3 text-[24px] lg:text-[28px] font-bold">中式英语避坑</h2>
-          <p class="mt-5 text-[14px] text-warm-muted max-w-2xl">左边是课本式 / 直译常见说法，右边是外企技术会议里真正会说的版本，下面说明为什么。</p>
+          ${sectionHead('fa-code-compare', 'COMMON MISTAKES', '中式英语避坑', '左边是课本式 / 直译常见说法，右边是外企技术会议里真正会说的版本，下面说明为什么。', 'pitfall')}
           <div id="pitfallGrid" class="mt-8 grid md:grid-cols-2 gap-4"></div>
         </div>
       </div>
-      <div class="max-w-7xl mx-auto px-5 lg:px-8 pb-16">
-        <span class="eyebrow"><i class="fa-solid fa-message"></i> SLACK / TEAMS MESSAGES</span>
-        <h2 class="title-underline mt-3 text-[24px] lg:text-[28px] font-bold">Slack / Teams 成段消息模板</h2>
-        <p class="mt-5 text-[14px] text-warm-muted max-w-2xl">比句型更长、可整段复制；比邮件更短、适合扫读。替换 [ ] 占位符后直接发送。</p>
+      <div class="border-t border-warm-line max-w-7xl mx-auto px-5 lg:px-8 py-14 lg:py-16">
+        ${sectionHead('fa-message', 'SLACK / TEAMS MESSAGES', 'Slack / Teams 成段消息模板', '比句型更长、可整段复制；比邮件更短、适合扫读。替换 [ ] 占位符后直接发送。', 'phrases')}
         <div id="imGrid" class="mt-8 grid md:grid-cols-2 gap-4"></div>
       </div>`);
     $('pitfallGrid').innerHTML = D.pitfalls.map((p) => `
@@ -842,8 +905,53 @@
       const t = D.imTemplates.find((x) => x.id === b.getAttribute('data-im-copy'));
       if (t) copyText(t.body).then((ok) => toast(ok ? '已复制，替换 [ ] 占位符后即可发送' : '复制失败，请手动选中文本复制'));
     };
+
+    // 4) 会议口语库：Code Review 表达（按意图分类切换）
+    const rTabs = $('reviewTabs');
+    let reviewCat = '全部';
+    const drawReview = () => {
+      rTabs.innerHTML = ['全部'].concat(D.reviewCategories).map((c) => `
+        <button type="button" class="tag ${c === reviewCat ? 'is-active' : ''}" data-review="${esc(c)}">${esc(c)}</button>
+      `).join('');
+      const list = reviewCat === '全部' ? D.reviewLines : D.reviewLines.filter((x) => x.category === reviewCat);
+      $('reviewGrid').innerHTML = list.map((x) => `
+        <div class="card card-hover p-4">
+          <div class="flex items-start justify-between gap-2">
+            <span class="text-[10px] font-semibold text-warm-blue bg-warm-blue/10 rounded px-2 py-0.5">${esc(x.category)}</span>
+            <button type="button" class="speak-btn !w-7 !h-7" data-speak="${esc(x.en)}" aria-label="朗读这句英文" title="朗读这句英文"><i class="fa-solid fa-volume-high text-[12px]"></i></button>
+          </div>
+          <p class="phrase-en mt-3 text-[13.5px] font-medium leading-[1.6]">${esc(x.en)}</p>
+          <p class="phrase-zh mt-1">${esc(x.zh)}</p>
+          <p class="mt-2 text-[11.5px] text-warm-muted leading-[1.65]">${esc(x.usage)}</p>
+        </div>`).join('');
+    };
+    drawReview();
+    rTabs.onclick = (e) => {
+      const b = e.target.closest('[data-review]');
+      if (b) { reviewCat = b.getAttribute('data-review'); drawReview(); }
+    };
+
+    // 5) 会议口语库：主持脚本（整段复制）
+    $('scriptGrid').innerHTML = D.meetingScripts.map((s) => `
+      <div class="card card-hover p-5 flex flex-col">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <h3 class="text-[14px] font-bold">${esc(s.name)}</h3>
+            <p class="mt-1 text-[12px] text-warm-muted">${esc(s.scene)}</p>
+          </div>
+          <button type="button" class="btn btn-quiet !py-1.5 !px-3 shrink-0" data-script-copy="${esc(s.id)}"><i class="fa-solid fa-copy text-[11px]"></i> 复制</button>
+        </div>
+        <div class="im-body mt-4 bg-warm-bg border border-warm-line rounded-xl p-4">${esc(s.body)}</div>
+      </div>`).join('');
+    $('scriptGrid').onclick = (e) => {
+      const b = e.target.closest('[data-script-copy]');
+      if (!b) return;
+      const s = D.meetingScripts.find((x) => x.id === b.getAttribute('data-script-copy'));
+      if (s) copyText(s.body).then((ok) => toast(ok ? '已复制，替换 [ ] 占位符后即可使用' : '复制失败，请手动选中文本复制'));
+    };
   }
   renderExtras();
+  renderIllustrations();
 
   /* ---------- 初始化 ---------- */
   // 扩展内容区追加的句子统一按分类归组，保证「全部」视图顺序整洁

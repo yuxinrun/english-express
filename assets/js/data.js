@@ -1234,3 +1234,385 @@ Reason: [REASON]. Agenda and pre-read stay the same: [LINK].
 Sorry for the short notice — please update your calendar.` }
 ];
 
+/* ---------- 三次扩充：Code Review 表达、主持脚本、更多场景与素材 ---------- */
+window.SITE_DATA.glossary.push(
+  { en: 'critical path', zh: '关键路径，任何延期都会直接影响里程碑', kind: '状态', fit: '项目进度跟踪会' },
+  { en: 'regression', zh: '回归问题：原本正常的功能被改坏了', kind: '质量', fit: '技术同步会议' },
+  { en: 'rollout', zh: '分批上线 / 灰度放量的过程', kind: '版本', fit: '版本同步会' },
+  { en: 'sign-off', zh: '相关方正式确认、批准放行', kind: '协作', fit: '技术研讨会' },
+  { en: 'triage', zh: '按影响面与优先级给问题分级', kind: '风险', fit: '故障复盘会' },
+  { en: 'postmortem', zh: '事故复盘，产出改进项而不是追责', kind: '质量', fit: '故障复盘会' }
+);
+
+window.SITE_DATA.abbr.push(
+  { term: 'TL;DR', full: 'Too Long; Did Not Read', zh: '太长不看，先给结论摘要', kind: '协作', example: 'TL;DR: we ship on Friday, with one open dependency.' },
+  { term: 'DRI', full: 'Directly Responsible Individual', zh: '直接负责人，一件事只指定一个人', kind: '协作', example: 'Who is the DRI for the migration?' },
+  { term: 'RACI', full: 'Responsible / Accountable / Consulted / Informed', zh: '角色分工矩阵', kind: '协作', example: 'A quick RACI before kickoff would help here.' },
+  { term: 'MVP', full: 'Minimum Viable Product', zh: '最小可用版本', kind: '流程', example: 'The MVP ships without the admin UI.' },
+  { term: 'POC', full: 'Proof of Concept', zh: '概念验证，只验证可行性', kind: '流程', example: 'A two-day POC should be enough to de-risk this.' },
+  { term: 'RCA', full: 'Root Cause Analysis', zh: '根因分析', kind: '质量', example: 'The RCA is due before the postmortem.' },
+  { term: 'SLA', full: 'Service Level Agreement', zh: '服务等级协议，对外的正式承诺', kind: '质量', example: "We're still within the SLA for availability." },
+  { term: 'BAU', full: 'Business As Usual', zh: '日常常规工作，区别于专项项目', kind: '协作', example: 'This is BAU work, not part of the migration.' }
+);
+
+window.SITE_DATA.emailTemplates.push(
+  {
+    id: 'e-09', name: '线上事故复盘', icon: 'fa-solid fa-triangle-exclamation',
+    scene: '故障恢复后同步影响面、时间线、根因与改进项，语气客观、不追责。',
+    subject: '[INCIDENT] [SERVICE] postmortem – [DATE]',
+    body: `Hi [TEAM],
+
+Sharing the postmortem for the [SEVERITY] incident on [DATE]. The service is fully recovered; no action is needed unless you are listed below.
+
+Impact
+- [IMPACT], from [TIME_A] to [TIME_B] ([DURATION])
+- Affected: [SCOPE]
+
+Timeline (all times [TIMEZONE])
+- [TIME_A] Alert fired on [METRIC]
+- [TIME_B] Mitigation applied: [ACTION]
+- [TIME_C] Full recovery confirmed
+
+Root cause
+- [ROOT_CAUSE]
+
+Action items
+- [ACTION_A] — [OWNER_A], by [DATE_A]
+- [ACTION_B] — [OWNER_B], by [DATE_B]
+
+Full details and graphs: [LINK]. Please add corrections in thread.`,
+    signature: `Thanks,
+[NAME]
+[ROLE] | [TEAM]`,
+    note: '适合故障复盘会之后。固定写「影响面、时间线、根因、改进项」四段，用事实描述代替指责个人。'
+  },
+  {
+    id: 'e-10', name: '代码冻结与发布窗口', icon: 'fa-solid fa-code-branch',
+    scene: '发布前通知 code freeze 时间、例外合并的审批流程与回滚方案。',
+    subject: 'Code freeze for [VERSION] from [DATE] – release window [DATE_B]',
+    body: `Hi [TEAM],
+
+We're entering code freeze for [VERSION] at [TIME] on [DATE].
+
+What this means
+- No non-critical merges to [BRANCH] after the freeze.
+- Exceptions need a [ROLE] sign-off and a linked [TICKET].
+- CI must be green before any exception is merged.
+
+Release window
+- [DATE_B] [TIME_B] [TIMEZONE], rollout to [ENV] first.
+- Canary for [DURATION], then full rollout if [METRIC] stays stable.
+- Rollback plan: [LINK].
+
+Please flag anything still in flight by [DATE_C] so we can plan the cut.`,
+    signature: `Thanks,
+[NAME]
+[ROLE] | [TEAM]`,
+    note: '适合版本同步 / 发布协调会之后。不要只写「别合代码」，要给出冻结时间、例外审批、灰度与回滚。'
+  }
+);
+
+window.SITE_DATA.quiz.push(
+  { id: 'q-25', scene: '项目进度跟踪会上有人问 "Who is the DRI for the migration?"，他在问什么？',
+    options: [
+      'Who is the directly responsible individual for the migration?',
+      'How many days will the migration take?',
+      'Which database will be migrated?',
+      'Who approved the migration budget?'
+    ], answer: 0, channel: '口头会议',
+    explanation: 'DRI = Directly Responsible Individual，一件事只指定一个直接负责人，适合口头会议与工单认领。文字沟通里通常写成 "DRI: [NAME]" 放在行动项后面。' },
+  { id: 'q-26', scene: 'Code Review 里觉得对方的实现顺序有问题，哪一句最得体？',
+    options: [
+      "You are wrong; the ordering is bad.",
+      "I agree with the goal, but I'd question the ordering assumption here.",
+      'This code is terrible.',
+      'I do not want to read this PR.'
+    ], answer: 1, channel: '文字沟通',
+    explanation: '先认可目标，再把分歧收敛到一个可验证的具体假设，适合文字沟通（PR 评论、Slack）。会上口头版是 "Can we revisit the ordering?"。' },
+  { id: 'q-27', scene: '事故复盘邮件里最不应该缺少哪一部分？',
+    options: [
+      'A list of people to blame',
+      'Action items with an owner and a due date',
+      'A detailed apology in every paragraph',
+      'A joke to lighten the mood'
+    ], answer: 1, channel: '文字沟通',
+    explanation: '复盘的价值在可追踪的改进项：动作、负责人、截止时间。blameless postmortem 聚焦系统与流程，适合文字沟通。' },
+  { id: 'q-28', scene: '技术研讨会开场，主持人想先对齐本次会议要产出什么，最好怎么说？',
+    options: [
+      'Let us start talking now.',
+      "Just to make sure we're aligned, the goal today is to agree on the API contract.",
+      'English is hard, please be patient.',
+      'Does anyone have any questions at the end?'
+    ], answer: 1, channel: '口头会议',
+    explanation: '开场先给出可交付的决策目标（agree on X），避免讨论发散，适合口头会议（技术研讨会、方案评审会）。' },
+  { id: 'q-29', scene: 'Slack 里同事写 "TL;DR: we ship on Friday, with one open dependency."，TL;DR 的作用是？',
+    options: [
+      'Request a formal sign-off from every team',
+      'Give a short conclusion before the full context',
+      'Mark the message as a draft',
+      'Ask the reader to ignore the message'
+    ], answer: 1, channel: '文字沟通',
+    explanation: 'TL;DR 把结论提到最前面，方便扫读；后面再补背景与细节，适合文字沟通。口头会议里对应 "The short version is..."。' },
+  { id: 'q-30', scene: '版本同步会上提到 "This change is on the critical path for the beta."，意思是？',
+    options: [
+      'This change directly affects whether the beta can ship on time',
+      'This change is optional and can be dropped',
+      'This change only affects the test environment',
+      'This change has already been rolled back'
+    ], answer: 0, channel: '口头会议',
+    explanation: 'critical path（关键路径）上的工作一旦延期就会直接推迟里程碑，适合口头会议里说明优先级；文字版常写成 "On the critical path for [MILESTONE]."。' }
+);
+
+window.SITE_DATA.dialogues.push(
+  {
+    title: '代码评审 · 提出修改意见', scene: 'Code Review · 礼貌质疑与给出替代方案',
+    turns: [
+      { role: 'DEV', en: "Thanks for the review. I saw the comment about the retry loop — could you elaborate?", zh: '谢谢评审。看到关于重试循环的评论，能再展开说一下吗？' },
+      { role: 'REV', en: "Sure. My concern is that three retries on every timeout could amplify the load.", zh: '当然。我担心的是每次超时都重试三次会放大负载。' },
+      { role: 'DEV', en: "That's fair. Would exponential backoff with jitter address it?", zh: '有道理。加上抖动的指数退避能解决吗？' },
+      { role: 'REV', en: "It would. I'd also cap the total retry budget per request.", zh: '可以。我还会给每个请求设一个总重试预算上限。' },
+      { role: 'DEV', en: 'Good call. Do you want that in this PR or a follow-up?', zh: '好建议。你希望放在这个 PR 里，还是另开一个后续？' },
+      { role: 'REV', en: "Let's keep this PR small — a follow-up ticket is fine.", zh: '这个 PR 保持小一点，另开工单就行。' },
+      { role: 'DEV', en: "I'll link the ticket in the description and add a test for the backoff.", zh: '我会在描述里关联工单，并给退避逻辑加个测试。' },
+      { role: 'REV', en: 'LGTM once CI is green. Nice work on the refactor.', zh: 'CI 变绿就通过。这次重构做得不错。' }
+    ]
+  },
+  {
+    title: '故障复盘 · 根因与改进项', scene: 'Incident Postmortem · 只谈事实与行动项',
+    turns: [
+      { role: 'SRE', en: "Thanks everyone. This is a blameless postmortem — let's stick to facts.", zh: '谢谢大家。这次是无责复盘，我们只谈事实。' },
+      { role: 'SRE', en: 'The alert fired at 09:12 and full recovery was confirmed at 10:05.', zh: '告警在 09:12 触发，10:05 确认完全恢复。' },
+      { role: 'DEV', en: 'Impact was limited to the checkout flow, about 8% of requests.', zh: '影响范围只在下单流程，约 8% 的请求。' },
+      { role: 'PM', en: 'What was the root cause, not just the trigger?', zh: '根因是什么，而不只是触发点？' },
+      { role: 'SRE', en: 'The trigger was a bad config push; the root cause was no validation before rollout.', zh: '触发点是一次错误配置发布；根因是发布前没有校验。' },
+      { role: 'DEV', en: "I'll add schema validation to the config pipeline by Friday.", zh: '我会在周五前给配置流水线加上 schema 校验。' },
+      { role: 'PM', en: 'And we need an owner for the canary alert threshold.', zh: '还需要给灰度告警阈值指定一个负责人。' },
+      { role: 'SRE', en: "I'll take that. RCA and action items go out in the postmortem email today.", zh: '我来负责。今天会在复盘邮件里发出根因分析和行动项。' }
+    ]
+  }
+);
+
+window.SITE_DATA.pitfalls.push(
+  { bad: 'Please give me the data.', good: 'Could you share the dashboard link so I can check the numbers?', why: '说明用途并给出具体对象，对方不用追问「要哪份数据」，是技术研讨会的正常协作方式。', tag: '技术研讨会' },
+  { bad: 'This code is not good.', good: "I'd question the retry strategy here — it could amplify the load.", why: 'Code Review 里把评价换成可验证的技术判断，既具体又不针对人。', tag: '线上沟通' },
+  { bad: 'We will finish it as soon as possible.', good: "We'll land it by Thursday, assuming the credentials arrive tomorrow.", why: '给明确日期和前置条件，别人才能判断是否需要调整范围。', tag: '项目进度跟踪会' },
+  { bad: 'It is your bug.', good: 'This looks like a regression from the config change — can you confirm?', why: 'blameless 复盘描述现象与可能来源，不给人贴标签。', tag: '故障复盘会' },
+  { bad: 'Let us start the meeting.', good: "Let's get started. The goal today is to agree on the API contract.", why: '开场先对齐产出目标，是外企技术研讨会的标准做法，比单纯「开会了」更有信息量。', tag: '技术研讨会' },
+  { bad: 'I think this plan is dangerous.', good: "One risk I'd flag: there's no rollback path for the schema migration.", why: '把模糊的担心说成一个具体风险点，讨论才能推进到缓解措施。', tag: '技术研讨会' }
+);
+
+window.SITE_DATA.imTemplates.push(
+  { id: 'im-07', name: '线上问题快速同步', scene: '故障处理中每 30 分钟同步一次现状，避免所有人反复来问。',
+    body: `Incident update [TIME] — [SERVICE]
+Status: [INVESTIGATING / MITIGATING / MONITORING]
+Impact: [SCOPE]
+Next update: [TIME_B] | DRI: [NAME]
+Details: [LINK]` },
+  { id: 'im-08', name: '会后要点速记', scene: '会议结束立刻在频道里发结论与行动项，不等正式纪要。',
+    body: `Quick recap from [MEETING]:
+- Decision: [DECISION]
+- Open question: [QUESTION] (owner: [OWNER])
+- Action items: [ACTION_A] — [OWNER_A] by [DATE]; [ACTION_B] — [OWNER_B] by [DATE_B]
+Full notes: [LINK]` },
+  { id: 'im-09', name: '请求审批 / sign-off', scene: '发布或方案定稿前请相关方确认，给清楚截止时间与材料。',
+    body: `Requesting sign-off on [DELIVERABLE] before [DATE].
+Pre-read: [LINK] (~5 min). Scope: [SCOPE].
+If I don't hear back by [TIME], I'll assume we're good to proceed — please flag any concerns.` }
+);
+
+/* Code Review / 方案评审表达：按意图分类，逐句可朗读 */
+window.SITE_DATA.reviewCategories = ['礼貌提问', '建议改法', '指出风险', '通过 / 收尾'];
+window.SITE_DATA.reviewLines = [
+  { id: 'r-01', category: '礼貌提问', en: 'Quick question: what happens if this call times out?', zh: '一个小问题：如果这个调用超时会发生什么？', usage: '先说 quick question，降低打断感，再落到具体边界条件。' },
+  { id: 'r-02', category: '礼貌提问', en: 'Could you walk me through why we chose this ordering?', zh: '能讲一下为什么选这个顺序吗？', usage: '请对方解释思路而不是直接否定，适合方案评审会。' },
+  { id: 'r-03', category: '礼貌提问', en: 'Just to clarify, is this path covered by the existing tests?', zh: '确认一下，这条路径现有测试覆盖到了吗？', usage: '用 clarify 核对事实，避免基于误解提意见。' },
+  { id: 'r-04', category: '建议改法', en: 'Would it be simpler to extract this into a helper?', zh: '抽成一个辅助函数会不会更简单？', usage: '用 would it be 给出可选项，语气不命令。' },
+  { id: 'r-05', category: '建议改法', en: "I'd suggest a small follow-up PR so this one stays reviewable.", zh: '我建议拆一个小后续 PR，让这个 PR 保持可评审。', usage: '既提改进又照顾评审成本，外企 review 高频说法。' },
+  { id: 'r-06', category: '建议改法', en: 'One option is to add jitter to the backoff; that would avoid a retry storm.', zh: '一个方案是给退避加抖动，可以避免重试风暴。', usage: '方案 + 收益一起给，讨论才有依据。' },
+  { id: 'r-07', category: '指出风险', en: "One risk I'd flag: there's no rollback path for the schema migration.", zh: '我想提一个风险：数据库变更没有回滚路径。', usage: 'flag a risk 标准句式，把模糊担心变成具体风险点。' },
+  { id: 'r-08', category: '指出风险', en: 'This could amplify the load under a timeout spike.', zh: '超时突增时这可能放大负载。', usage: '用后果描述代替「这样不好」，技术研讨会上更有说服力。' },
+  { id: 'r-09', category: '指出风险', en: "I'm concerned this makes the error path harder to reason about.", zh: '我担心这会让错误分支更难推理。', usage: '把顾虑落在可维护性上，容易达成共识。' },
+  { id: 'r-10', category: '通过 / 收尾', en: 'LGTM once CI is green.', zh: 'CI 变绿就通过。', usage: '有条件通过，写清剩余条件，避免反复追问。' },
+  { id: 'r-11', category: '通过 / 收尾', en: 'Looks good to me, just one minor comment.', zh: '我看没问题，只有一条小建议。', usage: '通过信号 + 小建议，PR 评论里最常用的一句。' },
+  { id: 'r-12', category: '通过 / 收尾', en: "Thanks for the changes — I'll approve once the test is added.", zh: '谢谢修改，补上测试我就批准。', usage: '明确 approve 的前置条件，给提交者清晰下一步。' }
+];
+
+/* 会议主持脚本：成段可复制，按真实会议流程排列 */
+window.SITE_DATA.meetingScripts = [
+  { id: 's-01', name: '开场与目标对齐', scene: '所有人到齐后 30 秒内说清今天要产出什么。',
+    body: `Thanks everyone, let's get started.
+Just to make sure we're aligned, the goal today is to agree on [DELIVERABLE].
+We have [N] minutes; I'd like to leave the last five for action items.
+Quick context: [CONTEXT].` },
+  { id: 's-02', name: '过议程与时间盒', scene: '话题多、容易发散的技术研讨会。',
+    body: `Here's the agenda: first [TOPIC_A], then [TOPIC_B], and we'll close with [DECISION].
+Let's timebox [TOPIC_A] to [N] minutes so we have room for the decision.
+If something needs a deeper dive, we'll park it for a follow-up.` },
+  { id: 's-03', name: '控场与岔题处理', scene: '少数人的细节讨论占满全员时间时礼貌收住。',
+    body: `That's a good point, but I think it's a separate thread.
+Let's park this and take it offline — [NAME_A] and [NAME_B], could you sync after this call?
+Coming back to [TOPIC_A]: do we have enough data to decide today?` },
+  { id: 's-04', name: '收尾与行动项', scene: '会议最后五分钟，把结论变成有 owner 和截止时间的行动项。',
+    body: `To recap: we agreed on [DECISION], and we're parking [TOPIC_B].
+Action items:
+- [ACTION_A] — [OWNER_A], by [DATE_A]
+- [ACTION_B] — [OWNER_B], by [DATE_B]
+I'll send the notes in [CHANNEL] today. Please flag anything inaccurate in thread.` }
+];
+
+/* 首页 4 步学习路径（配 SVG 路线图） */
+window.SITE_DATA.learningPath = [
+  { step: '01', title: '先听高频词', desc: '把 blocker、ETA、critical path 这类词听熟，会上才不会卡在第一句。', route: 'home', action: '看高频词' },
+  { step: '02', title: '背能开口的句子', desc: '按开场、汇报、阻塞、讨论、收尾分类背完整句，替换项目名就能用。', route: 'phrases', action: '去会议口语库' },
+  { step: '03', title: '整段跟读真实会议', desc: '从站会到故障复盘，按角色跟读多轮对话，学会一句话接下一句。', route: 'phrases', action: '看真实对话' },
+  { step: '04', title: '自测查漏', desc: '用中文场景选择题检验是否真的会选，解析会说明该用会议还是文字沟通。', route: 'quiz', action: '开始自测' }
+];
+
+/* ---------- 内联 SVG 配图（暖色线性风格，全部本地内联，无外部图片请求） ---------- */
+window.SITE_ILLUS = (function () {
+  const frame = (label, inner) => `<svg viewBox="0 0 200 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${label}">
+    <rect x="6" y="6" width="188" height="128" rx="16" fill="#FFFDF8" stroke="#EAE7E2" stroke-width="1.5"/>
+    <circle cx="178" cy="24" r="4" fill="#C88A65" opacity=".22"/>
+    <circle cx="22" cy="118" r="3" fill="#648B94" opacity=".2"/>
+    ${inner}
+  </svg>`;
+
+  return {
+    phrases: frame('会议对话气泡插画', `
+      <rect x="26" y="30" width="112" height="44" rx="12" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.4"/>
+      <path d="M42 74l-3 12 17-12" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.4" stroke-linejoin="round"/>
+      <rect x="40" y="44" width="76" height="6" rx="3" fill="#E8E3DB"/>
+      <rect x="40" y="56" width="52" height="5" rx="2.5" fill="#F1EDE7"/>
+      <rect x="64" y="86" width="110" height="38" rx="12" fill="#F5F1EB" stroke="#EAE7E2" stroke-width="1.4"/>
+      <circle cx="82" cy="105" r="7" fill="#C88A65" opacity=".35"/>
+      <rect x="96" y="99" width="58" height="5" rx="2.5" fill="#C88A65" opacity=".45"/>
+      <rect x="96" y="109" width="40" height="4" rx="2" fill="#D9D2C8"/>`),
+
+    progress: frame('迭代进度条与里程碑旗帜插画', `
+      <rect x="28" y="30" width="144" height="84" rx="10" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.4"/>
+      <rect x="42" y="44" width="46" height="6" rx="3" fill="#E8E3DB"/>
+      <rect x="42" y="60" width="116" height="10" rx="5" fill="#F1EDE7"/>
+      <rect x="42" y="60" width="72" height="10" rx="5" fill="#C88A65" opacity=".68"/>
+      <rect x="42" y="82" width="116" height="10" rx="5" fill="#F1EDE7"/>
+      <rect x="42" y="82" width="96" height="10" rx="5" fill="#648B94" opacity=".55"/>
+      <path d="M150 20v20 M150 20l12 4-12 5" fill="none" stroke="#648B94" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>
+      <circle cx="150" cy="20" r="2.6" fill="#648B94" opacity=".6"/>`),
+
+    emails: frame('技术同步邮件信封插画', `
+      <rect x="34" y="34" width="132" height="78" rx="10" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.4"/>
+      <path d="M34 46l66 40 66-40" fill="none" stroke="#C88A65" stroke-width="1.8" opacity=".65" stroke-linejoin="round"/>
+      <path d="M34 46v66 M166 46v66" stroke="#EAE7E2" stroke-width="1.2"/>
+      <rect x="48" y="90" width="52" height="5" rx="2.5" fill="#E8E3DB"/>
+      <rect x="48" y="100" width="36" height="4" rx="2" fill="#F1EDE7"/>
+      <circle cx="152" cy="40" r="10" fill="#C88A65" opacity=".22"/>
+      <path d="M148 40h8 M152 36v8" stroke="#C88A65" stroke-width="1.6" stroke-linecap="round"/>`),
+
+    quiz: frame('自测答题卡与成绩插画', `
+      <rect x="44" y="22" width="106" height="98" rx="10" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.4"/>
+      <rect x="58" y="38" width="70" height="6" rx="3" fill="#E8E3DB"/>
+      <circle cx="62" cy="62" r="7" fill="#648B94" opacity=".2"/>
+      <rect x="76" y="59" width="56" height="5" rx="2.5" fill="#E8E3DB"/>
+      <circle cx="62" cy="86" r="7" fill="#C88A65" opacity=".35"/>
+      <path d="M59 86l2.5 2.5 4-5" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="76" y="83" width="42" height="5" rx="2.5" fill="#E8E3DB"/>
+      <circle cx="150" cy="94" r="17" fill="#648B94" opacity=".14"/>
+      <text x="150" y="99" text-anchor="middle" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#648B94">A+</text>`),
+
+    focus: frame('场景精准靶心插画', `
+      <circle cx="100" cy="70" r="38" fill="none" stroke="#EAE7E2" stroke-width="2"/>
+      <circle cx="100" cy="70" r="26" fill="none" stroke="#C88A65" stroke-width="2" opacity=".4"/>
+      <circle cx="100" cy="70" r="12" fill="#C88A65" opacity=".65"/>
+      <path d="M100 18v14 M100 108v14 M48 70h14 M138 70h14" fill="none" stroke="#648B94" stroke-width="2" stroke-linecap="round" opacity=".45"/>`),
+
+    reuse: frame('模板拿来即用层叠卡片插画', `
+      <rect x="40" y="28" width="94" height="74" rx="10" fill="#F5F1EB" stroke="#EAE7E2" stroke-width="1.4"/>
+      <rect x="56" y="40" width="94" height="74" rx="10" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.4"/>
+      <rect x="70" y="54" width="60" height="6" rx="3" fill="#E8E3DB"/>
+      <rect x="70" y="68" width="46" height="5" rx="2.5" fill="#F1EDE7"/>
+      <rect x="70" y="82" width="54" height="5" rx="2.5" fill="#F1EDE7"/>
+      <circle cx="150" cy="98" r="12" fill="#648B94" opacity=".16"/>
+      <path d="M145 98h10 M150 93v10" stroke="#648B94" stroke-width="1.8" stroke-linecap="round"/>`),
+
+    light: frame('碎片时间轻量学习书本插画', `
+      <path d="M40 46c18-8 34-6 56 4v62c-22-10-38-12-56-4z" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.4" stroke-linejoin="round"/>
+      <path d="M96 50c22-10 38-12 56-4v62c-18-8-34-6-56 4z" fill="#F5F1EB" stroke="#EAE7E2" stroke-width="1.4" stroke-linejoin="round"/>
+      <path d="M96 50v62" fill="none" stroke="#C88A65" stroke-width="1.6" opacity=".5"/>
+      <rect x="50" y="62" width="32" height="5" rx="2.5" fill="#E8E3DB"/>
+      <rect x="50" y="74" width="24" height="4" rx="2" fill="#F1EDE7"/>
+      <rect x="110" y="62" width="30" height="5" rx="2.5" fill="#E8E3DB"/>
+      <rect x="110" y="74" width="20" height="4" rx="2" fill="#F1EDE7"/>`),
+
+    abbr: frame('外企缩写与黑话字母卡插画', `
+      <rect x="26" y="44" width="60" height="54" rx="10" fill="#C88A65" opacity=".16"/>
+      <text x="56" y="77" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#C88A65">EOD</text>
+      <path d="M94 71h22 m-7-6 7 6-7 6" fill="none" stroke="#648B94" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>
+      <rect x="124" y="44" width="50" height="54" rx="10" fill="#648B94" opacity=".14"/>
+      <text x="149" y="77" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#648B94">DRI</text>
+      <rect x="52" y="106" width="96" height="5" rx="2.5" fill="#E8E3DB"/>`),
+
+    pitfall: frame('中式英语避坑对照插画', `
+      <rect x="22" y="36" width="64" height="68" rx="10" fill="#FFFDF8" stroke="#EAE7E2" stroke-width="1.4"/>
+      <path d="M44 58l16 16 M60 58l-16 16" fill="none" stroke="#9A948C" stroke-width="2" stroke-linecap="round" opacity=".6"/>
+      <rect x="38" y="88" width="34" height="5" rx="2.5" fill="#E8E3DB"/>
+      <path d="M94 70h22 m-7-6 7 6-7 6" fill="none" stroke="#C88A65" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity=".75"/>
+      <rect x="124" y="36" width="54" height="68" rx="10" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.4"/>
+      <path d="M138 66l7 7 12-15" fill="none" stroke="#648B94" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="138" y="88" width="26" height="5" rx="2.5" fill="#E8E3DB"/>`),
+
+    dialogue: frame('多轮会议对话轮流发言插画', `
+      <rect x="24" y="34" width="152" height="30" rx="10" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.4"/>
+      <circle cx="40" cy="49" r="8" fill="#C88A65" opacity=".35"/>
+      <rect x="56" y="43" width="76" height="5" rx="2.5" fill="#E8E3DB"/>
+      <rect x="56" y="53" width="48" height="4" rx="2" fill="#F1EDE7"/>
+      <rect x="24" y="72" width="152" height="30" rx="10" fill="#F5F1EB" stroke="#EAE7E2" stroke-width="1.4"/>
+      <circle cx="40" cy="87" r="8" fill="#648B94" opacity=".35"/>
+      <rect x="56" y="81" width="88" height="5" rx="2.5" fill="#C88A65" opacity=".4"/>
+      <rect x="56" y="91" width="58" height="4" rx="2" fill="#D9D2C8"/>
+      <circle cx="164" cy="112" r="7" fill="#648B94" opacity=".16"/>`),
+
+    review: frame('代码评审分支与合并请求插画', `
+      <path d="M52 32v76 M52 58h30 M52 96h30" fill="none" stroke="#EAE7E2" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="52" cy="32" r="7" fill="#648B94" opacity=".5"/>
+      <circle cx="52" cy="58" r="7" fill="#C88A65" opacity=".55"/>
+      <circle cx="52" cy="96" r="7" fill="#648B94" opacity=".32"/>
+      <rect x="88" y="40" width="82" height="38" rx="9" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.4"/>
+      <path d="M100 59l5 5 9-11" fill="none" stroke="#648B94" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="114" y="53" width="44" height="5" rx="2.5" fill="#E8E3DB"/>
+      <rect x="114" y="63" width="30" height="4" rx="2" fill="#F1EDE7"/>
+      <rect x="88" y="86" width="82" height="26" rx="9" fill="#F5F1EB" stroke="#EAE7E2" stroke-width="1.4"/>
+      <rect x="100" y="96" width="52" height="5" rx="2.5" fill="#D9D2C8"/>`),
+
+    script: frame('会议主持脚本与议程插画', `
+      <rect x="48" y="24" width="104" height="40" rx="9" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.4"/>
+      <rect x="60" y="36" width="54" height="5" rx="2.5" fill="#E8E3DB"/>
+      <rect x="60" y="48" width="36" height="4" rx="2" fill="#F1EDE7"/>
+      <rect x="88" y="68" width="24" height="36" rx="12" fill="#C88A65" opacity=".3"/>
+      <path d="M76 88a24 24 0 0 0 48 0" fill="none" stroke="#C88A65" stroke-width="2" stroke-linecap="round" opacity=".65"/>
+      <path d="M100 112v8 M88 120h24" fill="none" stroke="#648B94" stroke-width="2" stroke-linecap="round" opacity=".55"/>
+      <circle cx="152" cy="96" r="10" fill="#648B94" opacity=".16"/>
+      <path d="M148 96l3 3 5-6" fill="none" stroke="#648B94" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`),
+
+    path: `<svg viewBox="0 0 760 130" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="四步学习路径路线图：先听高频词、背句子、整段跟读、自测查漏">
+      <path d="M95 64H665" fill="none" stroke="#EAE7E2" stroke-width="2" stroke-dasharray="6 9"/>
+      <circle cx="95" cy="64" r="30" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.5"/>
+      <circle cx="95" cy="64" r="21" fill="#C88A65" opacity=".16"/>
+      <text x="95" y="70" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#C88A65">01</text>
+      <circle cx="285" cy="64" r="30" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.5"/>
+      <circle cx="285" cy="64" r="21" fill="#648B94" opacity=".16"/>
+      <text x="285" y="70" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#648B94">02</text>
+      <circle cx="475" cy="64" r="30" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.5"/>
+      <circle cx="475" cy="64" r="21" fill="#C88A65" opacity=".16"/>
+      <text x="475" y="70" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#C88A65">03</text>
+      <circle cx="665" cy="64" r="30" fill="#FFFFFF" stroke="#EAE7E2" stroke-width="1.5"/>
+      <circle cx="665" cy="64" r="21" fill="#648B94" opacity=".16"/>
+      <text x="665" y="70" text-anchor="middle" font-family="Inter, sans-serif" font-size="15" font-weight="700" fill="#648B94">04</text>
+      <path d="M655 64l8-6v12z" fill="#C88A65" opacity=".55"/>
+      <circle cx="190" cy="64" r="3.5" fill="#C88A65" opacity=".4"/>
+      <circle cx="380" cy="64" r="3.5" fill="#648B94" opacity=".4"/>
+      <circle cx="570" cy="64" r="3.5" fill="#C88A65" opacity=".4"/>
+      <circle cx="40" cy="24" r="4" fill="#C88A65" opacity=".2"/>
+      <circle cx="720" cy="106" r="5" fill="#648B94" opacity=".18"/>
+    </svg>`
+  };
+})();
+

@@ -191,23 +191,17 @@
         <div class="max-w-7xl mx-auto px-5 lg:px-8 py-14 lg:py-16">
           <div class="grid md:grid-cols-3 gap-5">
             <div class="card card-hover p-6">
-              <div class="w-10 h-10 rounded-xl bg-warm-accent/10 flex items-center justify-center mb-4">
-                <i class="fa-solid fa-crosshairs text-warm-accent"></i>
-              </div>
+              <div class="illus-slot illus-card mb-3" data-illus="focus"></div>
               <h3 class="text-[16px] font-bold">场景精准</h3>
               <p class="mt-2 text-[13.5px] text-warm-muted leading-[1.7]">只学技术研讨会、项目同步会刚需英语。每一句都标注<span class="text-warm-accent font-semibold">适合技术会议</span>，不做应试内容。</p>
             </div>
             <div class="card card-hover p-6">
-              <div class="w-10 h-10 rounded-xl bg-warm-blue/10 flex items-center justify-center mb-4">
-                <i class="fa-solid fa-pen-to-square text-warm-blue"></i>
-              </div>
+              <div class="illus-slot illus-card mb-3" data-illus="reuse"></div>
               <h3 class="text-[16px] font-bold">拿来即用</h3>
               <p class="mt-2 text-[13.5px] text-warm-muted leading-[1.7]">完整句型，直接替换项目名词就能使用。每条都附使用说明与替换提示，不用自己改写语法。</p>
             </div>
             <div class="card card-hover p-6">
-              <div class="w-10 h-10 rounded-xl bg-warm-accent/10 flex items-center justify-center mb-4">
-                <i class="fa-solid fa-feather text-warm-accent"></i>
-              </div>
+              <div class="illus-slot illus-card mb-3" data-illus="light"></div>
               <h3 class="text-[16px] font-bold">轻量化学习</h3>
               <p class="mt-2 text-[13.5px] text-warm-muted leading-[1.7]">短句为主，适合碎片时间背诵，无复杂长难句。收藏、搜索、自测都在本地完成。</p>
             </div>
@@ -290,10 +284,11 @@
 
     <!-- ============ 2. 会议口语库 ============ -->
     <section id="view-phrases" class="view hidden">
-      <div class="max-w-7xl mx-auto px-5 lg:px-8 pt-28 pb-16">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8 pt-28 pb-16 relative">
         <span class="eyebrow"><i class="fa-solid fa-comments"></i> CORE · MEETING PHRASES</span>
         <h2 class="title-underline mt-3 text-[27px] lg:text-[32px] font-bold">会议口语库</h2>
         <p class="mt-5 text-[14px] text-warm-muted max-w-3xl">按外企技术会议的真实流程分类：从开场破冰到收尾总结。每条包含英文原句、中文翻译、使用说明与替换提示。</p>
+        <div class="page-illus hidden lg:block" data-illus="phrases"></div>
         <div class="mt-6 note-box max-w-3xl">
           <strong>适合技术会议：</strong>全部句子适用于<strong>外企技术研讨会、项目进度跟踪会、技术同步会议</strong>。不用复杂语法，直接背下来就能在会上开口。
         </div>
@@ -326,10 +321,11 @@
 
     <!-- ============ 3. 项目进度句型 ============ -->
     <section id="view-progress" class="view hidden">
-      <div class="max-w-7xl mx-auto px-5 lg:px-8 pt-28 pb-16">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8 pt-28 pb-16 relative">
         <span class="eyebrow"><i class="fa-solid fa-list-check"></i> PROJECT TRACKING</span>
         <h2 class="title-underline mt-3 text-[27px] lg:text-[32px] font-bold">项目进度句型</h2>
         <p class="mt-5 text-[14px] text-warm-muted max-w-3xl">专门针对项目跟踪会、每日站会与进度同步。同一场景分别给出会上说的版本与会后发的版本。</p>
+        <div class="page-illus hidden lg:block" data-illus="progress"></div>
         <div class="mt-6 grid sm:grid-cols-2 gap-3 max-w-3xl">
           <div class="note-box"><strong>口头会议版本：</strong>外企项目进度跟踪会、站会上直接开口说，短句、给结论。</div>
           <div class="note-box"><strong>文字同步版本：</strong>Slack / Teams / 邮件里发，带状态、ETA、链接，方便扫读与追踪。</div>
@@ -365,10 +361,11 @@
 
     <!-- ============ 4. 技术邮件模板 ============ -->
     <section id="view-emails" class="view hidden">
-      <div class="max-w-7xl mx-auto px-5 lg:px-8 pt-28 pb-16">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8 pt-28 pb-16 relative">
         <span class="eyebrow"><i class="fa-solid fa-envelope-open-text"></i> EMAIL TEMPLATES</span>
         <h2 class="title-underline mt-3 text-[27px] lg:text-[32px] font-bold">技术邮件模板</h2>
         <p class="mt-5 text-[14px] text-warm-muted max-w-3xl">外企技术同步、进度汇报、问题升级与会议纪要模板。分邮件主题、正文、结尾落款三段，一键复制全部文本。</p>
+        <div class="page-illus hidden lg:block" data-illus="emails"></div>
         <div class="mt-6 note-box max-w-3xl">
           <strong>适合技术会议：</strong>用于外企技术研讨会、项目进度跟踪会的会前邀约与会后书面沉淀。正文中所有 <strong>[XXX] 占位符</strong>都需要替换为自己的项目名、版本、时间与负责人。
         </div>
@@ -382,10 +379,11 @@
 
     <!-- ============ 5. 练习自测 ============ -->
     <section id="view-quiz" class="view hidden">
-      <div class="max-w-7xl mx-auto px-5 lg:px-8 pt-28 pb-16">
+      <div class="max-w-7xl mx-auto px-5 lg:px-8 pt-28 pb-16 relative">
         <span class="eyebrow"><i class="fa-solid fa-clipboard-check"></i> PRACTICE & SELF-CHECK</span>
         <h2 class="title-underline mt-3 text-[27px] lg:text-[32px] font-bold">练习自测</h2>
         <p class="mt-5 text-[14px] text-warm-muted max-w-3xl">给中文场景，选出最合适的英文表达。提交后显示答案与解析，解析会说明这个句子适合会议还是文字沟通。</p>
+        <div class="page-illus hidden lg:block" data-illus="quiz"></div>
         <div class="mt-6 note-box max-w-3xl">
           <strong>适合技术会议：</strong>题目全部来自外企技术研讨会、项目进度跟踪会与 Slack/Teams 文字同步场景。成绩记录只保存在本地浏览器。
         </div>
