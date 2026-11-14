@@ -1,0 +1,125 @@
+# 技英快进 | 外企技术职场英语
+
+给英语基础一般的大学生，快速学能用在外企的技术职场英语。只覆盖**技术研讨会、项目进度跟踪会、技术同步会、每日站会、线上沟通与邮件**的真实表达，不做四六级、雅思托福应试内容。
+
+**在线站点**：<https://yuxinrun.github.io/english-express/> · <https://www.yuxin.run/english-express/>
+
+纯前端静态站点，无后端、无 CDN、无外部请求。所有字体、图标、发音音频均在本地，双击 `index.html` 即可离线使用。
+
+---
+
+## 快速开始
+
+```powershell
+# 方式一：直接双击 index.html（推荐，file:// 下发音与所有交互均可用）
+
+# 方式二：本地静态服务器
+python -m http.server 8000
+# 打开 http://localhost:8000
+```
+
+站点是单页 hash 路由：`#/home`、`#/phrases`、`#/progress`、`#/emails`、`#/quiz`，切换不新开标签。
+
+---
+
+## 内容与功能
+
+| 模块 | 内容 |
+| --- | --- |
+| 首页 | Hero、3 个核心优势、6 类适用场景、会议流程 5 步速查、16 个高频词速查、今日一句 |
+| 会议口语库 | 56 条，7 个分类：开场破冰 / 汇报进展 / 遇到阻塞 / 提出疑问 / 讨论方案 / 表达不同意 / 收尾总结 |
+| 项目进度句型 | 36 条，6 个分类，区分**口头会议版**与 **Slack / Teams 文字同步版** |
+| 技术邮件模板 | 6 个模板：技术同步、进度汇报、问题升级、会议纪要、会议邀约、依赖跟进 |
+| 练习自测 | 18 道中文场景选择题，提交后给出答案、解析与「会议 / 文字沟通」适用说明 |
+
+每条句子都包含：英文原句、中文翻译、使用说明、替换提示、`适合技术会议` 标注。`[XXX]` 为占位符，按自己项目替换即可。
+
+其他交互：关键词搜索（`block` / `delay` / `risk` / `demo` 等）、分类与表达形式筛选、**收藏**、只看收藏、邮件一键复制、模板 `[ ]` 占位符说明、自测成绩记录。收藏与自测记录保存在 `localStorage`，不上传服务器。
+
+### 发音
+
+点击英文句子右侧的小喇叭即可朗读，再点一次停止，切换页面或换一句会自动停止。
+
+- 优先播放 `assets/audio/` 下的离线 MP3（132 个，约 3.5 MB，仅在点击时按需加载，不依赖系统语音包）
+- 音频缺失时自动回退到浏览器内置 Web Speech API（`en-US`，语速 0.92）
+- `[PROJECT]` 等占位符会读成 `project`，不会念出方括号
+
+---
+
+## 目录结构
+
+```
+english-express/
+├── index.html                       # 单页骨架、导航、5 个视图、Hero 线性插画
+├── assets/
+│   ├── css/
+│   │   ├── tailwind.css             # Tailwind CSS v3 编译产物（本地，已压缩）
+│   │   └── style.css                # 配色变量、字体、组件、动效
+│   ├── js/
+│   │   ├── data.js                  # 全部内容数据（新增句子/模板/题目只改这里）
+│   │   ├── app.js                   # 路由、搜索、收藏、复制、发音、自测
+│   │   └── audio-manifest.js        # 已有离线音频的键集合（自动生成）
+│   ├── audio/*.mp3                  # 132 个离线发音文件
+│   └── vendor/                      # Font Awesome 6、Inter 字体（本地）
+├── tools/generate_audio.py          # 可选：重新生成发音 MP3
+├── src/input.css                    # Tailwind 入口
+├── tailwind.config.js               # Tailwind v3 配置（warm 色板、字体）
+├── package.json                     # 可选：重新编译 CSS
+└── .github/workflows/deploy.yml     # GitHub Pages 自动部署
+```
+
+线上只发布 `index.html` 与 `assets/`；`node_modules`、`src`、`tools`、构建配置不会进入站点。
+
+---
+
+## 设计规范
+
+| 项 | 值 |
+| --- | --- |
+| 主背景 | `#FFFDF8` 暖米白 |
+| 卡片背景 | `#FFFFFF` |
+| 文字主色 / 次要 | `#3A3A38` / `#70706C` |
+| 强调色 | `#C88A65` 低饱和暖棕 |
+| 辅助色 | `#648B94` 低饱和灰蓝 |
+| 边框 / 分割线 | `#EAE7E2` |
+| 字体 | 中文系统无衬线（思源黑体 / PingFang SC 优先），英文 Inter |
+| 行高 | 正文 1.7，标题 1.3 |
+
+只保留这一套暖白护眼主题，不做暗色模式。动效克制（`0.28s` 缓动、hover 上浮 2px），无弹窗、无广告、无付费引导。
+
+---
+
+## 常见维护
+
+| 想做的事 | 操作 |
+| --- | --- |
+| 新增句子 / 模板 / 自测题 | 在 `assets/js/data.js` 末尾「扩展内容区」对应 `push()` 里追加对象，会自动按分类归组 |
+| 改配色或字体 | 改 `assets/css/style.css` 顶部的 `:root` 变量 |
+| 新增或改动 Tailwind 类名 | `npm install` 后运行 `npm run build:css`，再提交生成的 `assets/css/tailwind.css` |
+| 新增句子后想要统一发音音质 | 运行 `python tools/generate_audio.py`，会自动更新 MP3 与 `audio-manifest.js` |
+| 新增句子但不想生成音频 | 无需操作，该句会自动回退到浏览器朗读 |
+
+`tools/generate_audio.py` 依赖 Node.js、`edge-tts`（`pip install edge-tts`）和联网，**仅生成时需要**；站点运行时完全离线。
+
+---
+
+## 自动部署
+
+`.github/workflows/deploy.yml` 在 `push` 到 `main` 或手动 `Run workflow` 时触发：
+
+1. 检出代码
+2. 组装静态目录 `_site`（`index.html` + `assets/` + `.nojekyll`）
+3. 上传 Pages artifact
+4. 调用 `actions/deploy-pages` 发布
+
+仓库已启用 GitHub Pages，构建源为 **GitHub Actions**。因此日常只需：
+
+```powershell
+git add .
+git commit -m "update content"
+git push
+```
+
+推送完成后约 1 分钟即可在线上看到更新。若需手动重跑，在仓库 **Actions → Deploy to GitHub Pages → Run workflow** 即可。
+
+> 注：`push` 事件前两条历史运行失败于 Pages 启用前的 `Setup Pages` 步骤，Pages 启用后的运行均为成功，可忽略历史失败记录。
